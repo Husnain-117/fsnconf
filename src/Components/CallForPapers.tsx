@@ -15,6 +15,7 @@ import {
   ArrowRight,
 } from "lucide-react"
 import { Button } from "@/Components/ui/button"
+import { useEffect } from "react"
 import { useState } from "react"
 
 const themes = [
@@ -84,10 +85,20 @@ export const CallForPapers: React.FC = () => {
   const [showAllThemes, setShowAllThemes] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
 
+  // Smoothly scroll to the top of the guidelines section when it becomes visible
+  useEffect(() => {
+    if (currentPage === 2) {
+      const el = document.getElementById("abstract-guidelines")
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" })
+      }
+    }
+  }, [currentPage])
+
   if (currentPage === 2) {
     return (
       <section id="submission-guidelines" className="min-h-screen py-16 px-6 bg-[#D8CFF2]">
-        <div className="max-w-6xl mx-auto">
+        <div id="abstract-guidelines" className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
@@ -270,7 +281,9 @@ export const CallForPapers: React.FC = () => {
           </div>
 
           <Button
-            onClick={() => setCurrentPage(2)}
+            onClick={() => {
+              setCurrentPage(2)
+            }}
             className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105"
           >
             View Submission Guidelines

@@ -5,6 +5,11 @@ import { useState } from "react"
 import { Users, Crown, Shield, Award, Zap, Heart, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/Components/ui/button"
 
+const scrollToContact = () => {
+  const el = document.querySelector('#contact')
+  if (el) el.scrollIntoView({ behavior: 'smooth' })
+}
+
 const committees = [
   {
     role: "Patron-in-Chief",
@@ -64,7 +69,7 @@ export const Organizers: React.FC = () => {
   }
 
   return (
-    <section className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
+    <section id="organizers" className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -171,7 +176,10 @@ export const Organizers: React.FC = () => {
                   to help shape the future of our conferences.
                 </p>
               </div>
-              <Button className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-3 rounded-full transition-all duration-300 hover:scale-105">
+              <Button
+                 onClick={scrollToContact}
+                className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-3 rounded-full transition-all duration-300 hover:scale-105"
+              >
                 <Users className="w-5 h-5 mr-2" />
                 Get Involved Today
               </Button>

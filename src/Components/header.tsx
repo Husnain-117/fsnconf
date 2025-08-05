@@ -131,10 +131,6 @@ const Header: React.FC = () => {
           <animated.div style={logoSpring} className="flex-shrink-0 z-10">
             <motion.a
               href="#hero"
-              onClick={(e) => {
-                e.preventDefault()
-                smoothScroll("#hero")
-              }}
               className="flex items-center gap-3 cursor-pointer"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -187,8 +183,10 @@ const Header: React.FC = () => {
                             <a
                               href={item.href}
                               onClick={(e) => {
-                                e.preventDefault()
-                                smoothScroll(item.href)
+                                if (item.href !== "#registration") {
+                                  e.preventDefault()
+                                  smoothScroll(item.href)
+                                }
                               }}
                               className="flex items-center gap-3"
                             >
@@ -215,11 +213,11 @@ const Header: React.FC = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <Button
-                onClick={() => smoothScroll("#registration")}
+                <Button
+                asChild
                 className="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
               >
-                Register Now
+                <a href="#registration">Register Now</a>
               </Button>
             </motion.div>
 
@@ -322,9 +320,14 @@ const Header: React.FC = () => {
                                         asChild
                                         variant="ghost"
                                         className="w-full justify-start rounded-lg px-4 py-3 text-slate-300 transition-all duration-300 hover:bg-slate-700/30 hover:text-white hover:translate-x-1"
-                                        onClick={() => {
-                                          setMobileDrawerOpen(false)
-                                          setTimeout(() => smoothScroll(item.href), 100)
+                                        onClick={(e) => {
+                                          if (item.href !== "#registration") {
+                                            e.preventDefault()
+                                            setMobileDrawerOpen(false)
+                                            setTimeout(() => smoothScroll(item.href), 100)
+                                          } else {
+                                            setMobileDrawerOpen(false)
+                                          }
                                         }}
                                       >
                                         <a href={item.href} className="flex items-center gap-3">
@@ -346,13 +349,11 @@ const Header: React.FC = () => {
                   {/* Mobile CTA */}
                   <div className="p-6 border-t border-slate-700/50">
                     <Button
-                      onClick={() => {
-                        setMobileDrawerOpen(false)
-                        setTimeout(() => smoothScroll("#registration"), 100)
-                      }}
+                      asChild
+                      onClick={() => setMobileDrawerOpen(false)}
                       className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                     >
-                      Register for Conference
+                      <a href="#registration">Register for Conference</a>
                     </Button>
                   </div>
                 </motion.div>

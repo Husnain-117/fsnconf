@@ -127,6 +127,7 @@ export default function Hero() {
   return (
     <>
       <section
+        id="hero"
         className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 font-display"
         style={{ backgroundColor: "#ffffff" , marginTop :"-26px" }}
       >

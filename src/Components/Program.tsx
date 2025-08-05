@@ -51,11 +51,15 @@ const programHighlights = [
 ]
 
 export const Program: React.FC = () => {
+  const scrollToContact = () => {
+    const el = document.querySelector('#contact')
+    if (el) el.scrollIntoView({ behavior: 'smooth' })
+  }
   const [hoveredCard, setHoveredCard] = useState<number | null>(null)
 
   hoveredCard;
   return (
-    <section className="min-h-screen py-16 px-6 bg-[#D8CFF2] flex items-center justify-center">
+    <section id="program" className="min-h-screen py-16 px-6 bg-[#D8CFF2] flex items-center justify-center">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -149,11 +153,17 @@ export const Program: React.FC = () => {
             The detailed conference schedule with session timings, speaker information, and venue details will be
             available on
           </p>
-          <div className="text-2xl font-bold text-yellow-300 mb-8">October 6, 2025</div>
-          <Button className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-3 rounded-full transition-all duration-300 hover:scale-105">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-4 md:mt-0">
+            <div className="text-2xl font-bold text-yellow-300">October 6, 2025</div>
+            <Button
+            onClick={scrollToContact}
+            className="bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-bold px-8 py-3 rounded-full transition-all duration-300 hover:scale-105 flex items-center gap-2"
+          >
             Get Notified
             <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
+          <ArrowRight className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </div>
     </section>

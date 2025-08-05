@@ -1,8 +1,9 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { CheckCircle, UserPlus, ArrowRight, Users, Award, X, Upload, Building, User, DollarSign } from "lucide-react"
+import { useState, useCallback, useEffect } from "react"
+import { useDropzone } from "react-dropzone"
+import { CheckCircle, UserPlus, ArrowRight, Users, Award, X, Upload, Building, User, DollarSign, FileText, Trash2 } from "lucide-react"
 import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
 import { Label } from "@/Components/ui/label"
@@ -88,38 +89,116 @@ export const Registration: React.FC = () => {
     setSelectedCategory("")
   }
 
+  const [preview, setPreview] = useState<string | null>(null)
+
   const handleInputChange = (field: string, value: string | boolean | File | null) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+    if (field === 'proofOfPayment' && value === null) {
+      if (preview) {
+        URL.revokeObjectURL(preview)
+        setPreview(null)
+      }
+    }
   }
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length > 0) {
+      const file = acceptedFiles[0]
+      handleInputChange("proofOfPayment", file)
+      if (preview) {
+        URL.revokeObjectURL(preview)
+      }
+      setPreview(URL.createObjectURL(file))
+    }
+  }, [preview])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'image/jpeg': [],
+      'image/png': [],
+      'application/pdf': [],
+    },
+    maxSize: 5 * 1024 * 1024, // 5MB
+    multiple: false,
+  })
+
+  useEffect(() => {
+    // Make sure to revoke the data uris to avoid memory leaks
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview)
+      }
+    }
+  }, [preview])
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
+    setIsLoading(true)
+    setError(null)
+    setSuccessMessage(null)
+
+    const data = new FormData()
+    Object.keys(formData).forEach((key) => {
+      const value = formData[key as keyof typeof formData]
+      if (value instanceof File) {
+        data.append(key, value)
+      } else if (typeof value === "boolean") {
+        data.append(key, String(value))
+      } else if (value) {
+        data.append(key, value)
+      }
+    })
+
+    try {
+      const response = await fetch("http://localhost:5000/api/register", {
+        method: "POST",
+        body: data,
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || "Something went wrong")
+      }
+
+      setSuccessMessage(result.message || "Registration successful!")
+      // Optionally, reset form or redirect user
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  if (showForm) {
-    return (
-      <section className="min-h-screen bg-white">
-        {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-violet-600 p-6 text-white">
-          <div className="max-w-4xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-white/20 rounded-2xl">
-                <UserPlus className="h-6 w-6" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold">Conference Registration</h1>
-                <p className="text-purple-100">Food Science & Nutrition Conference 2025</p>
-                <div className="mt-2">
-                  <span className="px-3 py-1 bg-white/20 rounded-full text-sm font-medium">{selectedCategory}</span>
+  return (
+    <section id="registration" className={showForm ? "min-h-screen bg-white" : "min-h-screen py-16 px-6 bg-gradient-to-br from-purple-50 via-white to-yellow-50"}>
+      {showForm ? (
+        <>
+          {/* Header */}
+          <div className="bg-gradient-to-r from-purple-600 to-violet-600 p-6 text-white">
+            <div className="max-w-4xl mx-auto flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-white/20 rounded-2xl">
+                  <UserPlus className="h-6 w-6" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold">Conference Registration</h1>
+                  <p className="text-purple-100">Food Science & Nutrition Conference 2025</p>
+                  <div className="mt-2">
+                    <span className="px-3 py-1 bg-white/20 rounded-full text-sm font-medium">{selectedCategory}</span>
+                  </div>
                 </div>
               </div>
+              <Button onClick={handleCloseForm} className="text-white hover:bg-white/20 rounded-full p-2" variant="ghost">
+                <X className="h-6 w-6" />
+              </Button>
             </div>
-            <Button onClick={handleCloseForm} className="text-white hover:bg-white/20 rounded-full p-2" variant="ghost">
-              <X className="h-6 w-6" />
-            </Button>
           </div>
-        </div>
 
         {/* Form Content */}
         <div className="max-w-4xl mx-auto p-6">
@@ -364,20 +443,48 @@ export const Registration: React.FC = () => {
               {/* File Upload */}
               <div className="space-y-3">
                 <Label className="text-sm font-semibold text-slate-800">Payment Proof *</Label>
-                <div className="border-2 border-dashed border-slate-300 rounded-xl p-8 text-center hover:border-yellow-400 transition-colors duration-300">
-                  <Upload className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-                  <p className="text-slate-600 font-medium mb-2">Upload payment screenshot or receipt</p>
-                  <p className="text-xs text-slate-500 mb-4">Accepted formats: JPG, PNG, PDF (Max size: 5MB)</p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="border-yellow-300 text-yellow-600 hover:bg-yellow-50 bg-transparent"
-                  >
-                    Choose File
-                  </Button>
+                <div
+                  {...getRootProps()}
+                  className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors duration-300 cursor-pointer ${isDragActive ? "border-yellow-500 bg-yellow-50" : "border-slate-300 hover:border-yellow-400"}`}>
+                  <input {...getInputProps()} />
+                  {formData.proofOfPayment ? (
+                    <div className="flex flex-col items-center gap-4">
+                      {preview && formData.proofOfPayment.type.startsWith('image/') ? (
+                        <img src={preview} alt="Payment proof preview" className="max-h-40 rounded-lg object-contain" />
+                      ) : (
+                        <FileText className="h-20 w-20 text-slate-500" />
+                      )}
+                      <div className="text-center">
+                        <p className="font-semibold text-slate-800">{formData.proofOfPayment.name}</p>
+                        <p className="text-xs text-slate-500">{(formData.proofOfPayment.size / 1024).toFixed(2)} KB</p>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation() // prevent opening file dialog
+                          handleInputChange("proofOfPayment", null)
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Remove File
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center gap-2 text-slate-600">
+                      <Upload className="h-12 w-12 text-slate-400" />
+                      <p className="font-medium">Drop your payment proof here, or click to browse</p>
+                      <p className="text-xs text-slate-500">JPG, PNG, or PDF (Max 5MB)</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
+
+            {/* Submission Status */}
+            {error && <div className="p-4 bg-red-100 text-red-700 rounded-lg">{error}</div>}
+            {successMessage && <div className="p-4 bg-green-100 text-green-700 rounded-lg">{successMessage}</div>}
 
             {/* Terms and Conditions */}
             <div className="space-y-4 p-6 bg-slate-50 rounded-2xl">
@@ -411,28 +518,17 @@ export const Registration: React.FC = () => {
             </div>
 
             {/* Submit Button */}
-            <div className="pt-6">
-              <Button
-                type="submit"
-                className="w-full h-14bg-yellow-500 hover:bg-yellow-600 text-white font-bold text-lg rounded-2xl transition-all duration-300"
-                disabled={!formData.confirmAccuracy || !formData.agreeConduct}
-              >
-                <div className="flex items-center justify-center gap-3">
-                  <CheckCircle className="w-6 h-6" />
-                  Complete Registration
-                  <ArrowRight className="w-6 h-6" />
-                </div>
+            <div className="flex justify-end pt-6 border-t-2 border-slate-100">
+              <Button type="submit" disabled={isLoading} className="h-14 px-8 text-lg font-bold bg-gradient-to-r from-purple-600 to-violet-600 text-white hover:opacity-90 transition-opacity duration-300 shadow-lg shadow-purple-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                {isLoading ? "Submitting..." : "Register Now"}
               </Button>
             </div>
           </form>
         </div>
-      </section>
-    )
-  }
-
-  return (
-    <section className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
-      <div className="max-w-6xl mx-auto">
+        </>
+      ) : (
+        // ... (rest of the code remains the same)
+        <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
@@ -506,7 +602,8 @@ export const Registration: React.FC = () => {
             </div>
           ))}
         </div>
-      </div>
+        </div>
+      )}
     </section>
   )
 }

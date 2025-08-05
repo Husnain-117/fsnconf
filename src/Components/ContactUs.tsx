@@ -42,8 +42,9 @@ export const Contact: React.FC = () => {
     message: "",
     inquiryType: "",
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [successMessage, setSuccessMessage] = useState<string | null>(null)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -51,23 +52,43 @@ export const Contact: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setIsSubmitting(true)
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 1500))
-    setSuccess(true)
-    setIsSubmitting(false)
-    setFormData({
-      name: "",
-      email: "",
-      organization: "",
-      subject: "",
-      message: "",
-      inquiryType: "",
-    })
+    setIsLoading(true)
+    setError(null)
+    setSuccessMessage(null)
+
+    try {
+      const response = await fetch("http://localhost:5000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.message || "Something went wrong")
+      }
+
+      setSuccessMessage(result.message || "Message sent successfully!")
+      setFormData({
+        name: "",
+        email: "",
+        organization: "",
+        subject: "",
+        message: "",
+        inquiryType: "",
+      })
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
-    <section className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
+    <section id="contact" className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -226,11 +247,11 @@ export const Contact: React.FC = () => {
             <div className="pt-4">
               <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full h-12 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl transition-all duration-300"
+                disabled={isLoading}
+                className="w-full h-12 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div className="flex items-center justify-center gap-2">
-                  {isSubmitting ? (
+                  {isLoading ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
                       Sending...
@@ -245,10 +266,15 @@ export const Contact: React.FC = () => {
                 </div>
               </Button>
 
-              {success && (
+              {successMessage && (
                 <div className="text-green-600 font-semibold text-center mt-4 flex items-center justify-center gap-2">
                   <CheckCircle className="h-5 w-5" />
-                  Message sent successfully!
+                  {successMessage}
+                </div>
+              )}
+              {error && (
+                <div className="text-red-600 font-semibold text-center mt-4">
+                  {error}
                 </div>
               )}
             </div>

@@ -4,6 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { Users, Star, ChevronLeft, ChevronRight, Play, ArrowRight } from "lucide-react"
 import { Button } from "@/Components/ui/button"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface Speaker {
   id: string
@@ -123,6 +124,7 @@ const speakers: Speaker[] = [
 export const Speakers: React.FC = () => {
     const [currentView, setCurrentView] = useState<"main" | "keynote" | "session" | "invited">("main")
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [showAllSpeakers, setShowAllSpeakers] = useState(false)
 
   const keynoteSpeakers = speakers.filter((speaker) => speaker.featured)
   const sessionChairs = speakers.filter((speaker) => !speaker.featured && (speaker.id === "7" || speaker.id === "8"))
@@ -146,7 +148,7 @@ export const Speakers: React.FC = () => {
     const currentSpeaker = currentSpeakers[currentIndex]
 
     return (
-      <section className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
+      <section id="speakers" className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
@@ -246,7 +248,7 @@ export const Speakers: React.FC = () => {
   }
 
   return (
-    <section className="min-h-screen py-16 px-6 bg-white">
+    <section id="speakers" className="min-h-screen py-16 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -382,12 +384,44 @@ export const Speakers: React.FC = () => {
 
       </div>
       <Button
-          
+            onClick={() => setShowAllSpeakers((prev) => !prev)}
             className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105"
           >
-            View All Speakers
+            {showAllSpeakers ? "Hide All Speakers" : "View All Speakers"}
             <ArrowRight className="w-5 h-5 ml-2" />
           </Button>
+
+          {/* All Speakers Grid */}
+          <AnimatePresence>
+            {showAllSpeakers && (
+              <motion.div
+                key="all-speakers"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+                className="mt-12 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+              >
+                {speakers.map((sp, idx) => (
+                  <motion.div
+                    key={sp.id}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.05, duration: 0.3 }}
+                    className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300"
+                  >
+                    <img src={sp.image || "/placeholder.svg"} alt={sp.name} className="w-full h-48 object-cover" />
+                    <div className="p-4 text-center space-y-1">
+                      <h4 className="font-bold text-slate-800">{sp.name}</h4>
+                      <p className="text-sm text-slate-600">{sp.title}</p>
+                      <p className="text-xs text-slate-500">{sp.company}</p>
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
     </section>
   )
 }

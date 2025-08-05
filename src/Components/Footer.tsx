@@ -78,24 +78,12 @@ export const Footer: React.FC = () => {
 
           {/* Social Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-bold text-yellow-300">Follow Us</h4>
-            <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className="p-2 bg-purple-700 rounded-lg text-purple-100 hover:bg-yellow-500 hover:text-purple-800 transition-all duration-300 hover:scale-110"
-                >
-                  {social.icon}
-                </a>
-              ))}
-            </div>
+            
             <button
               onClick={scrollToTop}
-              className="mt-4 p-2 bg-yellow-500 text-purple-800 rounded-lg hover:bg-yellow-400 transition-all duration-300 hover:scale-110"
+              className="mt-4 p-2 rounded-full bg-white/10 backdrop-blur-md text-white border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-110"
             >
-              <ArrowUp className="h-5 w-5" />
+              <ArrowUp className="h-5 w-5 text-white" />
             </button>
           </div>
         </div>

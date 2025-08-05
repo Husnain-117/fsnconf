@@ -3,6 +3,7 @@
 import type React from "react"
 import { useState } from "react"
 import { FileText, UploadCloud, Mic2, Download, ArrowRight, CheckCircle } from "lucide-react"
+import { toast } from "react-toastify"
 import { Button } from "@/Components/ui/button"
 
 const guidelines = [
@@ -46,6 +47,46 @@ const guidelines = [
 
 export const AbstractGuidelines: React.FC = () => {
   const [selectedGuideline, setSelectedGuideline] = useState<number | null>(null)
+  const [downloading, setDownloading] = useState(false)
+  const [downloaded, setDownloaded] = useState(false)
+
+  const handleDownloadPDF = async () => {
+    setDownloading(true)
+    setDownloaded(false)
+
+    const toastId = toast.info("Starting download...", {
+      position: "top-center",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+    })
+
+    try {
+      const response = await fetch("/FSNC_2025.pdf")
+      if (!response.ok) throw new Error("File not found")
+
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = "FSNC_2025.pdf"
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+
+      setDownloaded(true)
+      toast.update(toastId, { render: "Download complete!", type: "success", autoClose: 1500, isLoading: false })
+      setTimeout(() => setDownloaded(false), 1500)
+    } catch (e) {
+      toast.update(toastId, { render: "PDF download failed.", type: "error", autoClose: 1500, isLoading: false })
+    } finally {
+      setDownloading(false)
+    }
+  }
 
   return (
     <section className="min-h-screen py-16 px-6 bg-[#D8CFF2] flex items-center justify-center">
@@ -109,10 +150,23 @@ export const AbstractGuidelines: React.FC = () => {
             <p className="text-purple-100 text-lg mb-8 max-w-2xl mx-auto">
               Download our comprehensive guidelines document with templates, examples, and submission checklist.
             </p>
-            <Button className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105">
-              <Download className="w-5 h-5 mr-2" />
-              Download Complete Guidelines
-              <ArrowRight className="w-5 h-5 ml-2" />
+            <Button
+              onClick={handleDownloadPDF}
+              disabled={downloading}
+              className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105 disabled:opacity-50"
+            >
+              {downloading ? (
+                <>
+                  <Download className="w-5 h-5 mr-2 animate-spin" />
+                  Downloading...
+                </>
+              ) : (
+                <>
+                  <Download className="w-5 h-5 mr-2" />
+                  {downloaded ? "Downloaded!" : "Download Complete Guidelines"}
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </>
+              )}
             </Button>
           </div>
         </div>
