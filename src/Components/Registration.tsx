@@ -448,7 +448,7 @@ export const Registration: React.FC = () => {
 
         {/* Registration Categories */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          {categories.map((category, index) => (
+          {categories.map((category) => (
             <div
               key={category.type}
               className={`relative bg-white rounded-2xl shadow-lg border-2 border-gray-200 overflow-hidden cursor-pointer transition-all duration-300 hover:shadow-xl hover:scale-105 ${
