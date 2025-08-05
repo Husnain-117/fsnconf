@@ -51,14 +51,14 @@ export default function Hero() {
     })
 
     try {
-      const response = await fetch("/FSNC 2025.pdf")
+      const response = await fetch("/FSNC_2025.pdf")
       if (!response.ok) throw new Error("File not found")
 
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
-      a.download = "FSNC 2025.pdf"
+      a.download = "FSNC_2025.pdf"
       document.body.appendChild(a)
       a.click()
       a.remove()
