@@ -1,14 +1,9 @@
 "use client"
 
 import type React from "react"
-import { Mail, MapPin, Phone, Facebook, Twitter, Linkedin, Instagram, ArrowUp } from "lucide-react"
+import { Mail, MapPin, Phone,  ArrowUp } from "lucide-react"
 
-const socialLinks = [
-  { icon: <Facebook className="h-5 w-5" />, href: "#", label: "Facebook" },
-  { icon: <Twitter className="h-5 w-5" />, href: "#", label: "Twitter" },
-  { icon: <Linkedin className="h-5 w-5" />, href: "#", label: "LinkedIn" },
-  { icon: <Instagram className="h-5 w-5" />, href: "#", label: "Instagram" },
-]
+
 
 const quickLinks = [
   { name: "Home", href: "#home" },
