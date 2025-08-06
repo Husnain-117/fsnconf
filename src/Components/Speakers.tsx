@@ -6,27 +6,26 @@ import { User, X, Linkedin, Twitter, Globe } from 'lucide-react';
 
 const BASE_API_URL = 'https://fsnconference-backend.vercel.app'; // Production API URL
 
-// Helper function to construct proper image URL
-const getImageUrl = (imagePath?: string): string | undefined => {
-  if (!imagePath) return undefined;
-  
-  // If it's already a full URL or a data URI, return as is
-  if (imagePath.startsWith('http') || imagePath.startsWith('data:')) return imagePath;
-  
-  // Clean the path and construct full URL
-  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
-  return `${BASE_API_URL}${cleanPath}`;
-};
+// The new image URL is constructed directly in the SpeakerImage component.
 
 // A robust component to handle image loading with a fallback placeholder icon
-const SpeakerImage: React.FC<{ src?: string; alt: string; className: string }> = ({ src, alt, className }) => {
+interface SpeakerImageProps {
+  speakerId: string; // We only need the ID to fetch the image
+  speakerName: string; // For alt text
+  className?: string;
+}
+
+const SpeakerImage: React.FC<SpeakerImageProps> = ({ speakerId, speakerName, className }) => {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Construct the URL to the dedicated image endpoint
+  const imageUrl = `${BASE_API_URL}/api/speakers/${speakerId}/image`;
+
   useEffect(() => {
-    setImageError(false);
+    setImageError(false); // Reset error state when speaker ID changes
     setIsLoading(true);
-  }, [src]);
+  }, [speakerId]);
 
   const handleImageError = () => {
     setImageError(true);
@@ -91,7 +90,7 @@ const SpeakerDetailModal: React.FC<{ speaker: Speaker; onClose: () => void }> = 
             <div className="md:col-span-1">
               <SpeakerImage 
                 src={speaker.image}
-                alt={speaker.name} 
+                alt={speakerName} 
                 className="w-full h-auto aspect-square object-cover rounded-2xl shadow-md"
               />
             </div>
