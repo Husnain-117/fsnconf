@@ -6,27 +6,63 @@ import { User, X, Linkedin, Twitter, Globe } from 'lucide-react';
 
 const BASE_API_URL = 'https://fsnconference-backend.vercel.app'; // Production API URL
 
+// Helper function to construct proper image URL
+const getImageUrl = (imagePath?: string): string | undefined => {
+  if (!imagePath) return undefined;
+  
+  // If it's already a full URL, return as is
+  if (imagePath.startsWith('http')) return imagePath;
+  
+  // Clean the path and construct full URL
+  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  return `${BASE_API_URL}${cleanPath}`;
+};
+
 // A robust component to handle image loading with a fallback placeholder icon
 const SpeakerImage: React.FC<{ src?: string; alt: string; className: string }> = ({ src, alt, className }) => {
   const [imageError, setImageError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setImageError(false);
+    setIsLoading(true);
   }, [src]);
 
   const handleImageError = () => {
     setImageError(true);
+    setIsLoading(false);
   };
 
-  if (imageError || !src) {
+  const handleImageLoad = () => {
+    setIsLoading(false);
+  };
+
+  const imageUrl = getImageUrl(src);
+
+  if (imageError || !imageUrl) {
     return (
-      <div className={`${className} flex items-center justify-center bg-slate-200`}>
-        <User className="w-1/2 h-1/2 text-slate-400" />
+      <div className={`${className} flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 border-2 border-dashed border-slate-300`}>
+        <User className="w-1/3 h-1/3 text-slate-400" />
       </div>
     );
   }
 
-  return <img src={src} alt={alt} className={className} onError={handleImageError} />;
+  return (
+    <div className={`${className} relative overflow-hidden`}>
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-100 animate-pulse">
+          <User className="w-1/3 h-1/3 text-slate-300" />
+        </div>
+      )}
+      <img 
+        src={imageUrl} 
+        alt={alt} 
+        className={`${className} transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        onError={handleImageError}
+        onLoad={handleImageLoad}
+      />
+    </div>
+  );
 };
 
 // Modal component to display detailed speaker information
@@ -54,7 +90,7 @@ const SpeakerDetailModal: React.FC<{ speaker: Speaker; onClose: () => void }> = 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="md:col-span-1">
               <SpeakerImage 
-                src={speaker.image ? `${BASE_API_URL}/${speaker.image.replace('/api', '').replace(/\\/g, '/').replace('public/', '')}` : undefined}
+                src={speaker.image}
                 alt={speaker.name} 
                 className="w-full h-auto aspect-square object-cover rounded-2xl shadow-md"
               />
@@ -90,13 +126,20 @@ const SpeakerDetailModal: React.FC<{ speaker: Speaker; onClose: () => void }> = 
 };
 
 const Speakers: React.FC = () => {
-  const { speakers, fetchSpeakers, isLoading } = useSpeakerStore();
+  // Use reactive Zustand selectors for automatic updates
+  const speakers = useSpeakerStore(state => state.speakers);
+  const isLoading = useSpeakerStore(state => state.isLoading);
+  const fetchSpeakers = useSpeakerStore(state => state.fetchSpeakers);
+  
   const [expanded, setExpanded] = useState(false);
   const [selectedSpeaker, setSelectedSpeaker] = useState<Speaker | null>(null);
 
   useEffect(() => {
-    fetchSpeakers();
-  }, []);
+    // Only fetch if we don't have speakers yet
+    if (speakers.length === 0) {
+      fetchSpeakers();
+    }
+  }, [speakers.length, fetchSpeakers]);
 
   const visibleSpeakers = expanded ? speakers : speakers.slice(0, 3);
 
@@ -134,7 +177,7 @@ const Speakers: React.FC = () => {
                   className="bg-white border rounded-2xl shadow hover:shadow-xl transition-all cursor-pointer group" onClick={() => setSelectedSpeaker(sp)}
                 >
                   <SpeakerImage
-                    src={sp.image ? `${BASE_API_URL}/${sp.image.replace('/api', '').replace(/\\/g, '/').replace('public/', '')}` : undefined}
+                    src={sp.image}
                     alt={sp.name}
                     className="w-full h-48 object-cover rounded-t-2xl"
                   />

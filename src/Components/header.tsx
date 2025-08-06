@@ -239,7 +239,7 @@ const Header: React.FC = () => {
                       </div>
                       <div>
                         <span className="text-lg font-bold text-white">FSN Conference</span>
-                        <span className="text-blue-300 text-sm block">2026</span>
+                        
                       </div>
                     </div>
                     
