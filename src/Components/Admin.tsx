@@ -25,7 +25,7 @@ interface Speaker {
 }
 
 const ADMIN_KEY = 'systoid';
-const API_URL = 'http://localhost:5000/api'; // This should ideally be an environment variable
+const API_URL = 'https://fsnconference-backend.vercel.app/api'; // This should ideally be an environment variable
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

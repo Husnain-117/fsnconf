@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { toast } from 'react-toastify';
 
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://fsnconference-backend.vercel.app/api';
 
 export interface Speaker {
   id: string;
