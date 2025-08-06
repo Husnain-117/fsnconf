@@ -72,13 +72,10 @@ export const useSpeakerStore = create<SpeakerState>((set, get) => ({
         throw new Error(errorData.message || 'Failed to add speaker');
       }
 
+      toast.success('Speaker added successfully!');
+      get().fetchSpeakers(); // Re-fetch to sync the list
       const newSpeakerRaw = await response.json();
       const newSpeaker = { ...newSpeakerRaw, id: newSpeakerRaw._id } as Speaker;
-      // Optimistically update the store so UI updates instantly
-      set(state => ({ speakers: [newSpeaker, ...state.speakers], isLoading: false }));
-      // Also re-fetch in background to keep store fully in sync
-      get().fetchSpeakers();
-      toast.success('Speaker added successfully!');
       return newSpeaker;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to add speaker';
