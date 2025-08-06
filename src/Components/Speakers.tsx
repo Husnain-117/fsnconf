@@ -6,39 +6,62 @@ import { User, X, Linkedin, Twitter, Globe } from 'lucide-react';
 
 const BASE_API_URL = 'https://fsnconference-backend.vercel.app'; // Production API URL
 
+// Helper function to construct proper image URL
+const getImageUrl = (imagePath?: string): string | undefined => {
+  if (!imagePath) return undefined;
+  
+  // If it's already a full URL or a data URI, return as is
+  if (imagePath.startsWith('http') || imagePath.startsWith('data:')) return imagePath;
+  
+  // Clean the path and construct full URL
+  const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+  return `${BASE_API_URL}${cleanPath}`;
+};
+
 // A robust component to handle image loading with a fallback placeholder icon
-interface SpeakerImageProps {
-  speakerId: string;
-  speakerName: string;
-  className?: string;
-}
-
-const SpeakerImage: React.FC<SpeakerImageProps> = ({ speakerId, speakerName, className }) => {
+const SpeakerImage: React.FC<{ src?: string; alt: string; className: string }> = ({ src, alt, className }) => {
   const [imageError, setImageError] = useState(false);
-  const imageUrl = `${BASE_API_URL}/api/speakers/${speakerId}/image`;
+  const [isLoading, setIsLoading] = useState(true);
 
-  // When the speakerId changes, reset the error state.
   useEffect(() => {
     setImageError(false);
-  }, [speakerId]);
+    setIsLoading(true);
+  }, [src]);
 
-  // If there's an error or no ID, show the placeholder.
-  if (imageError || !speakerId) {
+  const handleImageError = () => {
+    setImageError(true);
+    setIsLoading(false);
+  };
+
+  const handleImageLoad = () => {
+    setIsLoading(false);
+  };
+
+  const imageUrl = getImageUrl(src);
+
+  if (imageError || !imageUrl) {
     return (
-      <div className={`${className} flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 border-2 border-dashed border-slate-300 rounded-lg`}>
+      <div className={`${className} flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 border-2 border-dashed border-slate-300`}>
         <User className="w-1/3 h-1/3 text-slate-400" />
       </div>
     );
   }
 
-  // Otherwise, render the image.
   return (
-    <img
-      src={imageUrl}
-      alt={speakerName}
-      className={className}
-      onError={() => setImageError(true)}
-    />
+    <div className={`${className} relative overflow-hidden`}>
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-100 animate-pulse">
+          <User className="w-1/3 h-1/3 text-slate-300" />
+        </div>
+      )}
+      <img 
+        src={imageUrl} 
+        alt={alt} 
+        className={`${className} transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+        onError={handleImageError}
+        onLoad={handleImageLoad}
+      />
+    </div>
   );
 };
 
@@ -67,9 +90,9 @@ const SpeakerDetailModal: React.FC<{ speaker: Speaker; onClose: () => void }> = 
           <div className="grid md:grid-cols-3 gap-8">
             <div className="md:col-span-1">
               <SpeakerImage 
-                speakerId={speaker.id}
-                speakerName={speaker.name} 
-                className="w-full h-auto aspect-square object-cover rounded-lg shadow-md"
+                src={speaker.image}
+                alt={speaker.name} 
+                className="w-full h-auto aspect-square object-cover rounded-2xl shadow-md"
               />
             </div>
             <div className="md:col-span-2">
@@ -153,9 +176,11 @@ const Speakers: React.FC = () => {
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
                   className="bg-white border rounded-2xl shadow hover:shadow-xl transition-all cursor-pointer group" onClick={() => setSelectedSpeaker(sp)}
                 >
-                  <div className="relative h-48 w-full overflow-hidden rounded-t-lg">
-                    <SpeakerImage speakerId={sp.id} speakerName={sp.name} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110" />
-                  </div>
+                  <SpeakerImage
+                    src={sp.image}
+                    alt={sp.name}
+                    className="w-full h-48 object-cover rounded-t-2xl"
+                  />
                   <div className="p-4 text-center space-y-2">
                     <h4 className="font-bold text-slate-800 text-lg group-hover:text-yellow-600 transition-colors">
                       {sp.name}
