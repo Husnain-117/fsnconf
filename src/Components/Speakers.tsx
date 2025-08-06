@@ -10,8 +10,8 @@ const BASE_API_URL = 'https://fsnconference-backend.vercel.app'; // Production A
 const getImageUrl = (imagePath?: string): string | undefined => {
   if (!imagePath) return undefined;
   
-  // If it's already a full URL, return as is
-  if (imagePath.startsWith('http')) return imagePath;
+  // If it's already a full URL or a data URI, return as is
+  if (imagePath.startsWith('http') || imagePath.startsWith('data:')) return imagePath;
   
   // Clean the path and construct full URL
   const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
