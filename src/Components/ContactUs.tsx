@@ -20,8 +20,8 @@ const contactMethods = [
   {
     icon: <Phone className="h-6 w-6" />,
     title: "Call Us",
-    contact: "+92 51 9049 000",
-    subContact: "+92 300 1234567",
+    contact: "03009200474 ",
+    subContact: "03009200474 ",
     color: "from-yellow-500 to-amber-500",
   },
   {
