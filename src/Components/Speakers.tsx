@@ -126,20 +126,20 @@ const SpeakerDetailModal: React.FC<{ speaker: Speaker; onClose: () => void }> = 
 };
 
 const Speakers: React.FC = () => {
-  // Use reactive Zustand selectors for automatic updates
-  const speakers = useSpeakerStore(state => state.speakers);
-  const isLoading = useSpeakerStore(state => state.isLoading);
-  const fetchSpeakers = useSpeakerStore(state => state.fetchSpeakers);
-  
+  // Use individual selectors for state and actions. This is the standard pattern
+  // and ensures the component re-renders only when the selected state changes.
+  const speakers = useSpeakerStore((state) => state.speakers);
+  const isLoading = useSpeakerStore((state) => state.isLoading);
+  const fetchSpeakers = useSpeakerStore((state) => state.fetchSpeakers);
+
   const [expanded, setExpanded] = useState(false);
   const [selectedSpeaker, setSelectedSpeaker] = useState<Speaker | null>(null);
 
+  // Fetch speakers only once when the component mounts.
+  // The component will then rely on the store for any further updates.
   useEffect(() => {
-    // Only fetch if we don't have speakers yet
-    if (speakers.length === 0) {
-      fetchSpeakers();
-    }
-  }, [speakers.length, fetchSpeakers]);
+    fetchSpeakers();
+  }, [fetchSpeakers]);
 
   const visibleSpeakers = expanded ? speakers : speakers.slice(0, 3);
 
@@ -166,7 +166,7 @@ const Speakers: React.FC = () => {
               layout
               className="grid sm:grid-cols-2 md:grid-cols-3 gap-8"
             >
-              {visibleSpeakers.map((sp, idx) => (
+              {visibleSpeakers.map((sp: Speaker, idx: number) => (
                 <motion.div
                   key={sp.id}
                   layout

@@ -76,6 +76,8 @@ export const useSpeakerStore = create<SpeakerState>((set, get) => ({
       const newSpeaker = { ...newSpeakerRaw, id: newSpeakerRaw._id } as Speaker;
       // Optimistically update the store so UI updates instantly
       set(state => ({ speakers: [newSpeaker, ...state.speakers], isLoading: false }));
+      // Also re-fetch in background to keep store fully in sync
+      get().fetchSpeakers();
       toast.success('Speaker added successfully!');
       return newSpeaker;
     } catch (error) {
