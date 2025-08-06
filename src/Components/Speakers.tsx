@@ -1,251 +1,105 @@
-"use client"
+import React, { useEffect, useState } from "react";
+import { useSpeakerStore, type Speaker } from "@/store/speakerStore"; // Update the path as needed
+import { Button } from "@/Components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+import { User, X, Linkedin, Twitter, Globe } from 'lucide-react';
 
-import type React from "react"
-import { useState } from "react"
-import { Users, Star, ChevronLeft, ChevronRight, Play, ArrowRight } from "lucide-react"
-import { Button } from "@/Components/ui/button"
-import { motion, AnimatePresence } from "framer-motion"
+const BASE_API_URL = 'http://localhost:5000'; // For serving static files like images
 
-interface Speaker {
-  id: string
-  name: string
-  title: string
-  company: string
-  image: string
-  bio: string
-  expertise: string[]
-  social: {
-    linkedin?: string
-    twitter?: string
-    website?: string
-  }
-  featured: boolean
-  talkTitle: string
-  talkDescription: string
-}
+// A robust component to handle image loading with a fallback placeholder icon
+const SpeakerImage: React.FC<{ src?: string; alt: string; className: string }> = ({ src, alt, className }) => {
+  const [imageError, setImageError] = useState(false);
 
-const speakers: Speaker[] = [
-  // Keynote Speakers
-  {
-    id: "1",
-    name: "Dr. Sarah Chen",
-    title: "Chief Food Scientist",
-    company: "Global Nutrition Institute",
-    image: "/placeholder.svg?height=300&width=300&text=Dr.+Sarah+Chen",
-    bio: "Leading food science researcher with 15+ years of experience in nutritional fortification and food safety.",
-    expertise: ["Food Science", "Nutrition", "Food Safety"],
-    social: { linkedin: "#", twitter: "#", website: "#" },
-    featured: true,
-    talkTitle: "Future of Nutritional Fortification",
-    talkDescription: "Exploring innovative approaches to combat malnutrition through food fortification.",
-  },
-  {
-    id: "2",
-    name: "Prof. Michael Rodriguez",
-    title: "Director of Research",
-    company: "International Food Policy Institute",
-    image: "/placeholder.svg?height=300&width=300&text=Prof.+Michael+Rodriguez",
-    bio: "Renowned expert in food policy and sustainable food systems with extensive research background.",
-    expertise: ["Food Policy", "Sustainability", "Research"],
-    social: { linkedin: "#", twitter: "#" },
-    featured: true,
-    talkTitle: "Sustainable Food Systems for Future",
-    talkDescription: "Addressing climate change challenges in global food production and distribution.",
-  },
-  // Session Chairs
-  {
-    id: "7",
-    name: "Dr. Robert Johnson",
-    title: "Conference Chair",
-    company: "COMSATS University",
-    image: "/placeholder.svg?height=300&width=300&text=Dr.+Robert+Johnson",
-    bio: "Distinguished professor with 20+ years in food science education and conference management.",
-    expertise: ["Food Science Education", "Conference Management", "Academic Leadership"],
-    social: { linkedin: "#", twitter: "#" },
-    featured: false,
-    talkTitle: "Welcome and Conference Overview",
-    talkDescription: "Opening remarks and overview of conference themes and schedule.",
-  },
-  {
-    id: "8",
-    name: "Prof. Emily Wilson",
-    title: "Session Moderator",
-    company: "Food Research Institute",
-    image: "/placeholder.svg?height=300&width=300&text=Prof.+Emily+Wilson",
-    bio: "Leading researcher in food technology with extensive conference organization experience.",
-    expertise: ["Food Technology", "Research", "Conference Organization"],
-    social: { linkedin: "#", website: "#" },
-    featured: false,
-    talkTitle: "Panel Discussion: Future of Food Tech",
-    talkDescription: "Moderating expert panel on innovations in food technology.",
-  },
-  // Invited Speakers
-  {
-    id: "3",
-    name: "Dr. James Park",
-    title: "Research Scientist",
-    company: "Nutrition Research Lab",
-    image: "/placeholder.svg?height=300&width=300&text=Dr.+James+Park",
-    bio: "Expert in functional foods and nutraceuticals with 50+ published papers.",
-    expertise: ["Functional Foods", "Nutraceuticals", "Research"],
-    social: { linkedin: "#", twitter: "#", website: "#" },
-    featured: false,
-    talkTitle: "Functional Foods and Health",
-    talkDescription: "Understanding the role of functional foods in promoting health.",
-  },
-  {
-    id: "4",
-    name: "Maria Gonzalez",
-    title: "Food Safety Director",
-    company: "Global Food Standards",
-    image: "/placeholder.svg?height=300&width=300&text=Maria+Gonzalez",
-    bio: "Food safety expert with extensive experience in quality assurance and regulations.",
-    expertise: ["Food Safety", "Quality Assurance", "Regulations"],
-    social: { linkedin: "#", twitter: "#" },
-    featured: false,
-    talkTitle: "Food Safety in Global Supply Chains",
-    talkDescription: "Ensuring food safety across complex global distribution networks.",
-  },
-  {
-    id: "5",
-    name: "Alex Kumar",
-    title: "Biotechnology Researcher",
-    company: "BioFood Innovations",
-    image: "/placeholder.svg?height=300&width=300&text=Alex+Kumar",
-    bio: "Pioneer in food biotechnology and genomics applications in food science.",
-    expertise: ["Biotechnology", "Genomics", "Innovation"],
-    social: { linkedin: "#", website: "#" },
-    featured: false,
-    talkTitle: "Biotechnology in Food Production",
-    talkDescription: "Leveraging biotechnology for sustainable food production.",
-  },
-]
+  useEffect(() => {
+    setImageError(false);
+  }, [src]);
 
-export const Speakers: React.FC = () => {
-    const [currentView, setCurrentView] = useState<"main" | "keynote" | "session" | "invited">("main")
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [showAllSpeakers, setShowAllSpeakers] = useState(false)
+  const handleImageError = () => {
+    setImageError(true);
+  };
 
-  const keynoteSpeakers = speakers.filter((speaker) => speaker.featured)
-  const sessionChairs = speakers.filter((speaker) => !speaker.featured && (speaker.id === "7" || speaker.id === "8"))
-  const invitedSpeakers = speakers.filter((speaker) => !speaker.featured && speaker.id !== "7" && speaker.id !== "8")
-
-  const nextSlide = () => {
-    const currentSpeakers =
-      currentView === "keynote" ? keynoteSpeakers : currentView === "session" ? sessionChairs : invitedSpeakers
-    setCurrentIndex((prev) => (prev + 1) % currentSpeakers.length)
-  }
-
-  const prevSlide = () => {
-    const currentSpeakers =
-      currentView === "keynote" ? keynoteSpeakers : currentView === "session" ? sessionChairs : invitedSpeakers
-    setCurrentIndex((prev) => (prev - 1 + currentSpeakers.length) % currentSpeakers.length)
-  }
-
-  if (currentView !== "main") {
-    const currentSpeakers =
-      currentView === "keynote" ? keynoteSpeakers : currentView === "session" ? sessionChairs : invitedSpeakers
-    const currentSpeaker = currentSpeakers[currentIndex]
-
+  if (imageError || !src) {
     return (
-      <section id="speakers" className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
-        <div className="max-w-4xl mx-auto">
-          {/* Header */}
-          <div className="text-center mb-8">
-            <h2 className="text-4xl font-black text-slate-800 mb-4">
-              {currentView === "keynote" ? "Keynote" : currentView === "session" ? "Session" : "Invited"}{" "}
-              <span className="text-yellow-600">
-                Speakers
-              </span>
-            </h2>
-            <Button
-              onClick={() => setCurrentView("main")}
-              className="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-            >
-              ← Back to Overview
-            </Button>
-          </div>
+      <div className={`${className} flex items-center justify-center bg-slate-200`}>
+        <User className="w-1/2 h-1/2 text-slate-400" />
+      </div>
+    );
+  }
 
-          {/* Speaker Slideshow */}
-          <div className="relative">
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
-              <div className="md:flex">
-                <div className="md:w-1/2">
-                  <img
-                    src={currentSpeaker.image || "/placeholder.svg"}
-                    alt={currentSpeaker.name}
-                    className="w-full h-64 md:h-full object-cover"
-                  />
-                </div>
-                <div className="md:w-1/2 p-8">
-                  <div className="mb-4">
-                    <div
-                      className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-bold text-white ${
-                        currentView === "keynote"
-                          ? "bg-gradient-to-r from-yellow-500 to-amber-500"
-                          : currentView === "session"
-                            ? "bg-gradient-to-r from-purple-500 to-violet-500"
-                            : "bg-gradient-to-r from-purple-600 to-pink-600"
-                      }`}
-                    >
-                      <Star className="h-3 w-3" />
-                      {currentView === "keynote" ? "Keynote" : currentView === "session" ? "Session Chair" : "Invited"}
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-800 mb-2">{currentSpeaker.name}</h3>
-                  <p className="text-lg font-semibold text-purple-600 mb-1">{currentSpeaker.title}</p>
-                  <p className="text-slate-600 mb-4">{currentSpeaker.company}</p>
+  return <img src={src} alt={alt} className={className} onError={handleImageError} />;
+};
 
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-bold text-slate-800 mb-2">Talk: {currentSpeaker.talkTitle}</h4>
-                      <p className="text-slate-600 text-sm">{currentSpeaker.talkDescription}</p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {currentSpeaker.expertise.map((skill) => (
-                        <span
-                          key={skill}
-                          className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs font-medium"
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+// Modal component to display detailed speaker information
+const SpeakerDetailModal: React.FC<{ speaker: Speaker; onClose: () => void }> = ({ speaker, onClose }) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: -50, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 50, opacity: 0 }}
+        className="bg-white rounded-2xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto relative"
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+      >
+        <button onClick={onClose} className="absolute top-4 right-4 text-slate-500 hover:text-slate-800 z-10">
+          <X size={24} />
+        </button>
+
+        <div className="p-8">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="md:col-span-1">
+              <SpeakerImage 
+                src={speaker.image ? `${BASE_API_URL}/${speaker.image.replace('/api', '').replace(/\\/g, '/').replace('public/', '')}` : undefined}
+                alt={speaker.name} 
+                className="w-full h-auto aspect-square object-cover rounded-2xl shadow-md"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <h2 className="text-3xl font-black text-slate-800">{speaker.name}</h2>
+              <p className="text-lg text-yellow-600 font-semibold">{speaker.title}</p>
+              <p className="text-md text-slate-600 mb-4">{speaker.company}</p>
+              
+              <div className="flex items-center gap-4 mb-6">
+                {speaker.social?.linkedin && <a href={speaker.social.linkedin} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-blue-600"><Linkedin /></a>}
+                {speaker.social?.twitter && <a href={speaker.social.twitter} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-sky-500"><Twitter /></a>}
+                {speaker.social?.website && <a href={speaker.social.website} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-green-600"><Globe /></a>}
+              </div>
+
+              <div className="space-y-1">
+                <h4 className="font-bold text-slate-700">Talk: <span className="font-normal">{speaker.talkTitle}</span></h4>
               </div>
             </div>
+          </div>
 
-            {/* Navigation */}
-            {currentSpeakers.length > 1 && (
-              <div className="flex justify-center gap-4 mt-6">
-                <Button
-                  onClick={prevSlide}
-                  className="bg-purple-100 hover:bg-purple-200 text-purple-700 p-3 rounded-full"
-                >
-                  <ChevronLeft className="h-5 w-5" />
-                </Button>
-                <div className="flex items-center gap-2">
-                  {currentSpeakers.map((_, idx) => (
-                    <div
-                      key={idx}
-                      className={`w-2 h-2 rounded-full ${idx === currentIndex ? "bg-purple-600" : "bg-purple-200"}`}
-                    />
-                  ))}
-                </div>
-                <Button
-                  onClick={nextSlide}
-                  className="bg-purple-100 hover:bg-purple-200 text-purple-700 p-3 rounded-full"
-                >
-                  <ChevronRight className="h-5 w-5" />
-                </Button>
-              </div>
-            )}
+          <div className="mt-8 pt-6 border-t">
+            <h3 className="text-xl font-bold text-slate-800 mb-2">About</h3>
+            <p className="text-slate-600 whitespace-pre-wrap">{speaker.bio}</p>
+
+            <h3 className="text-xl font-bold text-slate-800 mt-6 mb-2">Talk Description</h3>
+            <p className="text-slate-600 whitespace-pre-wrap">{speaker.talkDescription}</p>
           </div>
         </div>
-      </section>
-    )
-  }
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const Speakers: React.FC = () => {
+  const { speakers, fetchSpeakers, isLoading } = useSpeakerStore();
+  const [expanded, setExpanded] = useState(false);
+  const [selectedSpeaker, setSelectedSpeaker] = useState<Speaker | null>(null);
+
+  useEffect(() => {
+    fetchSpeakers();
+  }, []);
+
+  const visibleSpeakers = expanded ? speakers : speakers.slice(0, 3);
+
 
   return (
     <section id="speakers" className="min-h-screen py-16 px-6 bg-white">
@@ -253,177 +107,86 @@ export const Speakers: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
-            Featured{" "}
-            <span className="text-yellow-600">
-              Speakers
-            </span>
+            Our <span className="text-yellow-600">Speakers</span>
           </h2>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-           <i>Learn from industry leaders, renowned researchers, and visionary innovators.</i>
+            <i>Learn from global experts, innovators, and researchers.</i>
           </p>
         </div>
 
-        {/* Speaker Categories */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {/* Keynote Speakers */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
-            <div className="bg-gradient-to-r from-yellow-500 to-amber-500 p-6 text-white">
-              <div className="flex items-center gap-3 mb-4">
-                <Star className="h-6 w-6" />
-                <h3 className="text-xl font-bold">Keynote Speakers</h3>
-              </div>
-              <p className="text-yellow-100 text-sm">Industry leaders and visionaries</p>
-            </div>
-            <div className="p-6">
-              <div className="space-y-3 mb-6">
-                {keynoteSpeakers.map((speaker) => (
-                  <div key={speaker.id} className="flex items-center gap-3">
-                    <img
-                      src={speaker.image || "/placeholder.svg"}
-                      alt={speaker.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div>
-                      <div className="font-semibold text-slate-800 text-sm">{speaker.name}</div>
-                      <div className="text-slate-600 text-xs">{speaker.company}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Button
-                onClick={() => {
-                  setCurrentView("keynote")
-                  setCurrentIndex(0)
-                }}
-                className="w-full bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold py-2 rounded-full"
-              >
-                View Keynote Speakers
-              </Button>
-            </div>
-          </div>
-
-          {/* Session Chairs */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
-            <div className="bg-gradient-to-r from-purple-600 to-violet-600 p-6 text-white">
-              <div className="flex items-center gap-3 mb-4">
-                <Users className="h-6 w-6" />
-                <h3 className="text-xl font-bold">Session Chairs</h3>
-              </div>
-              <p className="text-purple-100 text-sm">Conference organizers and moderators</p>
-            </div>
-            <div className="p-6">
-              <div className="space-y-3 mb-6">
-                {sessionChairs.map((speaker) => (
-                  <div key={speaker.id} className="flex items-center gap-3">
-                    <img
-                      src={speaker.image || "/placeholder.svg"}
-                      alt={speaker.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div>
-                      <div className="font-semibold text-slate-800 text-sm">{speaker.name}</div>
-                      <div className="text-slate-600 text-xs">{speaker.company}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Button
-                onClick={() => {
-                  setCurrentView("session")
-                  setCurrentIndex(0)
-                }}
-                className="w-full bg-gradient-to-r from-purple-600 to-violet-600 hover:from-purple-700 hover:to-violet-700 text-white font-bold py-2 rounded-full"
-              >
-                View Session Chairs
-              </Button>
-            </div>
-          </div>
-
-          {/* Invited Speakers */}
-          <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300">
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-6 text-white">
-              <div className="flex items-center gap-3 mb-4">
-                <Play className="h-6 w-6" />
-                <h3 className="text-xl font-bold">Invited Speakers</h3>
-              </div>
-              <p className="text-purple-100 text-sm">Expert researchers and practitioners</p>
-            </div>
-            <div className="p-6">
-              <div className="space-y-3 mb-6">
-                {invitedSpeakers.slice(0, 2).map((speaker) => (
-                  <div key={speaker.id} className="flex items-center gap-3">
-                    <img
-                      src={speaker.image || "/placeholder.svg"}
-                      alt={speaker.name}
-                      className="w-10 h-10 rounded-full object-cover"
-                    />
-                    <div>
-                      <div className="font-semibold text-slate-800 text-sm">{speaker.name}</div>
-                      <div className="text-slate-600 text-xs">{speaker.company}</div>
-                    </div>
-                  </div>
-                ))}
-                {invitedSpeakers.length > 3 && (
-                  <div className="text-center text-sm text-slate-500">
-                    +{invitedSpeakers.length - 3} more speakers
-                  </div>
-                )}
-              </div>
-              <Button
-                onClick={() => {
-                  setCurrentView("invited")
-                  setCurrentIndex(0)
-                }}
-                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-2 rounded-full"
-              >
-                View All Speakers
-              </Button>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <Button
-            onClick={() => setShowAllSpeakers((prev) => !prev)}
-            className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105"
-          >
-            {showAllSpeakers ? "Hide All Speakers" : "View All Speakers"}
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
-
-          {/* All Speakers Grid */}
+        {/* Speaker Grid */}
+        {isLoading ? (
+          <p className="text-center text-gray-500">Loading speakers...</p>
+        ) : (
           <AnimatePresence>
-            {showAllSpeakers && (
-              <motion.div
-                key="all-speakers"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.4 }}
-                className="mt-12 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
-              >
-                {speakers.map((sp, idx) => (
-                  <motion.div
-                    key={sp.id}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: idx * 0.05, duration: 0.3 }}
-                    className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-shadow duration-300"
-                  >
-                    <img src={sp.image || "/placeholder.svg"} alt={sp.name} className="w-full h-48 object-cover" />
-                    <div className="p-4 text-center space-y-1">
-                      <h4 className="font-bold text-slate-800">{sp.name}</h4>
-                      <p className="text-sm text-slate-600">{sp.title}</p>
-                      <p className="text-xs text-slate-500">{sp.company}</p>
-                    </div>
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
+            <motion.div
+              layout
+              className="grid sm:grid-cols-2 md:grid-cols-3 gap-8"
+            >
+              {visibleSpeakers.map((sp, idx) => (
+                <motion.div
+                  key={sp.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3, delay: idx * 0.05 }}
+                  className="bg-white border rounded-2xl shadow hover:shadow-xl transition-all cursor-pointer group" onClick={() => setSelectedSpeaker(sp)}
+                >
+                  <SpeakerImage
+                    src={sp.image ? `${BASE_API_URL}/${sp.image.replace('/api', '').replace(/\\/g, '/').replace('public/', '')}` : undefined}
+                    alt={sp.name}
+                    className="w-full h-48 object-cover rounded-t-2xl"
+                  />
+                  <div className="p-4 text-center space-y-2">
+                    <h4 className="font-bold text-slate-800 text-lg group-hover:text-yellow-600 transition-colors">
+                      {sp.name}
+                    </h4>
+                    <p className="text-sm text-slate-600">{sp.title}</p>
+                    <p className="text-xs text-slate-500 font-medium mt-2 italic">{sp.talkTitle}</p>
+                    <span
+                      className={`inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full ${
+                        sp.featured
+                          ? "bg-yellow-100 text-yellow-800"
+                          : sp.type === "Session Chair"
+                          ? "bg-purple-100 text-purple-800"
+                          : "bg-pink-100 text-pink-800"
+                      }`}
+                    >
+                      {sp.featured ? "Keynote" : sp.type}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </AnimatePresence>
-    </section>
-  )
-}
+        )}
 
-export default Speakers
+        {/* Toggle Button */}
+        {!isLoading && speakers.length > 3 && (
+          <div className="text-center mt-12">
+            <Button
+              onClick={() => setExpanded((prev) => !prev)}
+              className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105"
+            >
+              {expanded ? "Show Less" : "View More"}
+            </Button>
+          </div>
+        )}
+
+       
+      </div>
+
+      <AnimatePresence>
+        {selectedSpeaker && (
+          <SpeakerDetailModal 
+            speaker={selectedSpeaker} 
+            onClose={() => setSelectedSpeaker(null)} 
+          />
+        )}
+      </AnimatePresence>
+    </section>
+  );
+};
+
+export default Speakers;

@@ -89,7 +89,7 @@ export const AbstractGuidelines: React.FC = () => {
   }
 
   return (
-    <section className="min-h-screen py-16 px-6 bg-[#D8CFF2] flex items-center justify-center">
+    <section id="abstract-guidelines" className="min-h-screen py-16 px-6 bg-[#D8CFF2] flex items-center justify-center">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">

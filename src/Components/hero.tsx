@@ -140,23 +140,21 @@ export default function Hero() {
           
 
           {/* Main Heading - reduced size */}
-          <motion.h1
+          <motion.h2
             variants={itemVariants}
-            className="text-4xl md:text-5xl lg:text-6xl font-black mb-3 text-[#1a2233] drop-shadow-[0_2px_8px_rgba(0,0,0,0.09)]"
+            className="text-4xl md:text-5xl lg:text-6xl font-black mb-3 mt-[120px] text-[#1a2233] drop-shadow-[0_2px_8px_rgba(0,0,0,0.09)]"
           >
-            Advancing <span className="text-yellow-600">Food Science & Nutrition</span>
-          </motion.h1>
+            Advancing <span className="text-yellow-600">Food Science and Nutrition by Bridging Research, Policy, and Practice</span>
+          </motion.h2>
 
           {/* Subtitle - made smaller and more compact */}
           <motion.p
             variants={itemVariants}
             className="mb-6 text-base md:text-lg lg:text-xl font-medium text-[#233047]/90 leading-relaxed max-w-4xl"
           >
-            Join global and local experts to bridge research, policy, and practice in food science and nutrition at{" "}
-            <span className="font-semibold text-yellow-600"><b>COMSATS University Islamabad (Sahiwal Campus)</b></span> on{" "}
-            <span className="font-semibold text-yellow-600"><b>October 13–14, 2025</b></span> in celebration of{" "}
-            <span className="font-semibold text-fuchsia-700">World Food Day 2025</span>, fostering innovation,
-            interdisciplinary collaboration, and research-to-policy transition for a healthier, food-secure future.
+            Join us at <b>FSNC 2025</b>, where global and local experts unite to address key issues in food science, nutrition, and public health. Hosted by <span className="font-semibold text-yellow-600"><b>COMSATS University Islamabad (Sahiwal Campus)</b></span>, in collaboration with the <span className="font-semibold">Higher Education Commission (HEC)</span> and <span className="font-semibold">Pakistan Society of Food Scientists and Technologists (PSFST)</span>, the conference aims to foster innovation, interdisciplinary collaboration, and research-to-policy translation in food and nutrition sciences.
+            <br /><br />
+            In celebration of <span className="font-semibold text-fuchsia-700">World Food Day 2025</span>, themed <i>"Hand in Hand for Better Foods and a Better Future,"</i> this conference echoes the global call to action by bringing together scientists, policymakers, health professionals, and industry experts to collaborate for a healthier, food-secure world.
           </motion.p>
 
           {/* Compact Countdown Timer */}

@@ -1,13 +1,14 @@
 "use client"
 import type React from "react"
 import { useState, useEffect } from "react"
-import { motion, AnimatePresence, type Variants } from "framer-motion"
+import { motion, AnimatePresence} from "framer-motion"
 import { useSpring, animated } from "@react-spring/web"
 import { Button } from "@/Components/ui/button"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/Components/ui/dropdown-menu"
+
 import { Sheet, SheetTrigger, SheetContent } from "@/Components/ui/sheet"
 import { Input } from "@/Components/ui/input"
 import { MenuIcon,  ChevronDown, Zap, Search } from "lucide-react"
+
 import logo from "../assets/Logo.png"
 
 interface NavigationItem {
@@ -41,7 +42,7 @@ const navigationSections: NavigationSection[] = [
     items: [
       { label: "Organizers", href: "#organizers" },
       { label: "Gallery", href: "#gallery" },
-      { label: "Accommodation", href: "#accommodation" },
+     
     ],
   },
   {
@@ -55,15 +56,6 @@ const navigationSections: NavigationSection[] = [
 /* -------------------------------------------------------------------------- */
 
 
-const menuItemVariants: Variants = {
-  hidden: { opacity: 0, x: -12 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.25 } },
-}
-
-const buttonVariants: Variants = {
-  hover: { y: -2, scale: 1.02 },
-  tap: { y: 0, scale: 0.98 },
-}
 
 /* -------------------------------------------------------------------------- */
 const Header: React.FC = () => {
@@ -86,7 +78,21 @@ const Header: React.FC = () => {
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, []);
+
+  // Prevent background scroll when mobileDrawerOpen
+  useEffect(() => {
+    if (mobileDrawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileDrawerOpen]);
+
+
 
   /* ---------------------------------------------------------------------- */
   /*                                SPRING ANI                                */
@@ -137,7 +143,13 @@ const Header: React.FC = () => {
             >
               <img src={logo} alt="Logo" className="h-16 w-auto" />
               <div className="flex flex-col">
-                <span className="text-xl font-black leading-tight"><span className="text-white">fsn</span><span className="text-yellow-500">Conference</span></span>
+                {/* Desktop / Tablet Title */}
+                <span className="hidden md:inline text-xl font-black leading-tight">
+                  <span className="text-white">Food Science and Nutrition </span>
+                  <span className="text-yellow-500">Conference</span>
+                </span>
+                {/* Mobile Title */}
+                <span className="md:hidden text-xl font-black leading-tight text-white">FSN&nbsp;Conference</span>
                 
               </div>
             </motion.a>
@@ -146,59 +158,33 @@ const Header: React.FC = () => {
 
 
           {/* Desktop nav - Centered -------------------------------------------------- */}
-          <div className="hidden lg:flex flex-1 items-center justify-center gap-2">
-            {navigationSections.map((section, i) => (
+          <div className="hidden lg:flex flex-1 items-center justify-end gap-1">
+            {navigationSections.flatMap(section => section.items).map((item, i) => (
               <motion.div
-                key={section.title}
+                key={item.label}
                 initial={{ opacity: 0, y: -12 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.12, duration: 0.4 }}
+                transition={{ delay: i * 0.07, duration: 0.4 }}
+                whileHover={{ y: -2, scale: 1.05 }}
+                whileTap={{ y: 0, scale: 0.98 }}
               >
-                <DropdownMenu>
-                  <motion.div variants={buttonVariants} whileHover="hover" whileTap="tap">
-                    <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="relative rounded-xl px-4 py-2 text-sm font-semibold text-slate-200 transition-all duration-300 hover:bg-yellow-500/20 hover:text-yellow-200 hover:shadow-lg backdrop-blur-sm border border-transparent hover:border-white/20"
-                      >
-                        {section.title}
-                        <ChevronDown className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                  </motion.div>
-                  <DropdownMenuContent className="mt-2 min-w-[220px] rounded-2xl border border-slate-700/50 bg-slate-800/95 backdrop-blur-xl p-2 shadow-2xl z-[60]">
-                    <AnimatePresence>
-                      {section.items.map((item, idx) => (
-                        <motion.div
-                          key={item.label}
-                          variants={menuItemVariants}
-                          initial="hidden"
-                          animate="visible"
-                          transition={{ delay: idx * 0.05 }}
-                        >
-                          <DropdownMenuItem
-                            className="cursor-pointer rounded-xl px-4 py-3 text-sm font-medium text-slate-200 transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-indigo-500/20 hover:text-white hover:shadow-md"
-                            asChild
-                          >
-                            <a
-                              href={item.href}
-                              onClick={(e) => {
-                                if (item.href !== "#registration") {
-                                  e.preventDefault()
-                                  smoothScroll(item.href)
-                                }
-                              }}
-                              className="flex items-center gap-3"
-                            >
-                              <div className="w-2 h-2 bg-blue-400 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                              {item.label}
-                            </a>
-                          </DropdownMenuItem>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button
+                  variant="ghost"
+                  asChild
+                  className="relative rounded-xl px-3 py-2 text-sm font-semibold text-slate-200 transition-all duration-300 hover:bg-yellow-500/20 hover:text-yellow-200 hover:shadow-lg backdrop-blur-sm border border-transparent hover:border-white/20"
+                >
+                  <a
+                    href={item.href}
+                    onClick={(e) => {
+                      if (item.href.startsWith("#")) {
+                        e.preventDefault();
+                        smoothScroll(item.href);
+                      }
+                    }}
+                  >
+                    {item.label}
+                  </a>
+                </Button>
               </motion.div>
             ))}
           </div>
@@ -206,33 +192,32 @@ const Header: React.FC = () => {
           {/* Search & mobile menu ---------------------------------------- */}
           <div className="flex items-center gap-4 flex-shrink-0 z-10">
            
-            {/* CTA Button - Hidden on mobile */}
-            <motion.div
-              className="hidden lg:block"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.5 }}
-            >
-                <Button
-                asChild
-                className="bg-yellow-500 hover:bg-yellow-600 text-slate-900 font-bold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-              >
-                <a href="#registration">Register Now</a>
-              </Button>
-            </motion.div>
+            
 
             {/* Mobile trigger */}
             <Sheet open={mobileDrawerOpen} onOpenChange={setMobileDrawerOpen}>
               <SheetTrigger asChild className="lg:hidden">
                 <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Open mobile menu"
-                    className="rounded-full bg-white/10 backdrop-blur-md p-2 text-white shadow-lg transition-all duration-300 hover:bg-white/20 hover:shadow-xl border border-white/20"
-                  >
-                    <MenuIcon className="h-6 w-6" />
-                  </Button>
+                  <button
+  aria-label={mobileDrawerOpen ? "Close navigation menu" : "Open navigation menu"}
+  aria-expanded={mobileDrawerOpen}
+  aria-controls="mobile-navbar"
+  className="relative flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-md p-2 text-white shadow-lg transition-all duration-300 hover:bg-white/20 hover:shadow-xl border border-white/20 focus:outline-none lg:hidden"
+  onClick={() => setMobileDrawerOpen((open) => !open)}
+>
+  <span className="sr-only">Menu</span>
+  <span className="block relative w-7 h-7">
+    <span
+      className={`absolute left-1/2 top-2 w-6 h-0.5 bg-white rounded transition-all duration-300 ${mobileDrawerOpen ? 'rotate-45 top-3.5' : '-translate-x-1/2 -translate-y-2.5'}`}
+    />
+    <span
+      className={`absolute left-1/2 top-1/2 w-6 h-0.5 bg-white rounded transition-all duration-300 ${mobileDrawerOpen ? 'opacity-0' : '-translate-x-1/2 -translate-y-1/2'}`}
+    />
+    <span
+      className={`absolute left-1/2 bottom-2 w-6 h-0.5 bg-white rounded transition-all duration-300 ${mobileDrawerOpen ? '-rotate-45 bottom-3.5' : '-translate-x-1/2 translate-y-2.5'}`}
+    />
+  </span>
+</button>
                 </motion.div>
               </SheetTrigger>
               <SheetContent
@@ -253,7 +238,7 @@ const Header: React.FC = () => {
                         <Zap className="h-5 w-5 text-white" />
                       </div>
                       <div>
-                        <span className="text-lg font-bold text-white">COMSATS Conf</span>
+                        <span className="text-lg font-bold text-white">FSN Conference</span>
                         <span className="text-blue-300 text-sm block">2026</span>
                       </div>
                     </div>
@@ -368,5 +353,7 @@ const Header: React.FC = () => {
     </>
   )
 }
+
+
 
 export default Header
