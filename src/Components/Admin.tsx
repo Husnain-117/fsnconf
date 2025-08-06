@@ -6,7 +6,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Key, User, Trash2, Upload, Loader,  XCircle } from 'lucide-react';
 
 interface Speaker {
-  id: number;
+  _id: string;
+  id: string;
   name: string;
   title: string;
   company: string;
@@ -25,7 +26,7 @@ interface Speaker {
 }
 
 const ADMIN_KEY = 'systoid';
-const API_URL = 'https://fsnconference-backend.vercel.app/api'; // This should ideally be an environment variable
+const API_URL = 'https://fsnconference-backend.vercel.app/api';
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -53,13 +54,22 @@ export default function Admin() {
   const fetchSpeakers = async () => {
     setIsFetching(true);
     try {
+      console.log('Fetching speakers from:', `${API_URL}/speakers`);
       const response = await fetch(`${API_URL}/speakers`);
       if (!response.ok) {
-        throw new Error('Failed to fetch speakers.');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to fetch speakers.');
       }
       const data = await response.json();
-      setSpeakers(data);
+      // Map _id to id for frontend compatibility
+      const mappedData = data.map((speaker: any) => ({
+        ...speaker,
+        id: speaker._id || speaker.id
+      }));
+      console.log('Fetched speakers:', mappedData);
+      setSpeakers(mappedData);
     } catch (error) {
+      console.error('Error fetching speakers:', error);
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -168,19 +178,21 @@ export default function Admin() {
     }
   };
 
-  const handleDeleteSpeaker = async (id: number) => {
+  const handleDeleteSpeaker = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this speaker?')) return;
     try {
+      console.log('Deleting speaker with ID:', id);
       const response = await fetch(`${API_URL}/speakers/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({}));
         throw new Error(errorData.message || 'Failed to delete speaker.');
       }
       toast.success('Speaker deleted successfully!');
-      fetchSpeakers(); // Refresh the list
+      await fetchSpeakers(); // Refresh the list
     } catch (error) {
+      console.error('Error deleting speaker:', error);
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
@@ -339,10 +351,13 @@ export default function Admin() {
                 <div key={speaker.id} className="flex flex-col bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="flex items-center mb-4">
                     <img
-                      src={`${API_URL}${speaker.image}`}
+                      src={speaker.image ? `${speaker.image.startsWith('http') ? '' : API_URL}${speaker.image}` : '/placeholder-user.svg'}
                       alt={speaker.name}
                       className="w-20 h-20 rounded-full object-cover mr-4 border-2 border-purple-300 shadow-sm"
-                      onError={(e) => e.currentTarget.src = '/placeholder.svg?height=80&width=80&text=No+Image'}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/placeholder-user.svg';
+                      }}
                     />
                     <div className="flex-grow">
                       <h3 className="font-bold text-xl text-slate-800">{speaker.name}</h3>

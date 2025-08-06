@@ -4,7 +4,7 @@ import { Button } from "@/Components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, X, Linkedin, Twitter, Globe } from 'lucide-react';
 
-const BASE_API_URL = 'https://fsnconference-backend.vercel.app'; // For serving static files like images
+const BASE_API_URL = 'https://fsnconference-backend.vercel.app'; // Production API URL
 
 // A robust component to handle image loading with a fallback placeholder icon
 const SpeakerImage: React.FC<{ src?: string; alt: string; className: string }> = ({ src, alt, className }) => {
