@@ -7,7 +7,7 @@ import { Button } from "@/Components/ui/button"
 
 import { Sheet, SheetTrigger, SheetContent } from "@/Components/ui/sheet"
 import { Input } from "@/Components/ui/input"
-import { MenuIcon,  ChevronDown, Zap, Search } from "lucide-react"
+import {   ChevronDown, Zap, Search } from "lucide-react"
 
 import logo from "../assets/Logo.png"
 
