@@ -28,7 +28,7 @@ interface SpeakerState {
   isLoading: boolean;
   error: string | null;
   fetchSpeakers: () => Promise<void>;
-  addSpeaker: (speakerData: FormData) => Promise<void>;
+  addSpeaker: (speakerData: FormData) => Promise<Speaker>;
   deleteSpeaker: (id: string) => Promise<void>;
   getSpeakerById: (id: string) => Speaker | undefined;
   getSpeakersByType: (type: 'keynote' | 'session' | 'invited' | 'Session Chair') => Speaker[];
@@ -48,7 +48,9 @@ export const useSpeakerStore = create<SpeakerState>((set, get) => ({
         throw new Error('Failed to fetch speakers');
       }
       const data = await response.json();
-      set({ speakers: data, isLoading: false });
+      // Map MongoDB _id to id for easier usage in the UI
+      const speakers = data.map((s: any) => ({ ...s, id: s._id }));
+      set({ speakers, isLoading: false });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to fetch speakers';
       set({ error: errorMessage, isLoading: false });
@@ -71,7 +73,8 @@ export const useSpeakerStore = create<SpeakerState>((set, get) => ({
 
       toast.success('Speaker added successfully!');
       get().fetchSpeakers(); // Re-fetch to sync the list
-      const newSpeaker = await response.json();
+      const newSpeakerRaw = await response.json();
+      const newSpeaker = { ...newSpeakerRaw, id: newSpeakerRaw._id } as Speaker;
       return newSpeaker;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to add speaker';
