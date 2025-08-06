@@ -125,14 +125,7 @@ export const Contact: React.FC = () => {
                   <p className="font-semibold text-slate-800">{method.contact}</p>
                   <p className="text-slate-600 text-sm">{method.subContact}</p>
                 </div>
-                <Button
-                  className={`w-full bg-gradient-to-r ${method.color} hover:opacity-90 text-white font-bold rounded-xl py-2 transition-all duration-300`}
-                >
-                  <div className="flex items-center justify-center gap-2">
-                    {method.icon}
-                    Contact Now
-                  </div>
-                </Button>
+                
               </div>
             </div>
           ))}
