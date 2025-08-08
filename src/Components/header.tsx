@@ -8,7 +8,7 @@ import { Button } from "@/Components/ui/button"
 
 import { Sheet, SheetTrigger, SheetContent } from "@/Components/ui/sheet"
 import { Input } from "@/Components/ui/input"
-import {   ChevronDown, Zap, Search } from "lucide-react"
+import {   ChevronDown, Search } from "lucide-react"
 
 import logo from "../assets/Logo.png"
 
@@ -218,16 +218,18 @@ const Header: React.FC = () => {
                 >
                   {/* Mobile Header */}
                   <div className="flex items-center justify-between p-6 border-b border-slate-700/50">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl">
-                        <Zap className="h-5 w-5 text-white" />
-                      </div>
-                      <div>
-                        <span className="text-lg font-bold text-white">FSN Conference</span>
-                        
-                      </div>
-                    </div>
-                    
+                    <Link to="/" className="flex items-center gap-3" onClick={() => setMobileDrawerOpen(false)}>
+                      <motion.div
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="flex items-center gap-3 cursor-pointer"
+                      >
+                        <img src={logo} alt="Logo" className="h-12 w-auto" />
+                        <div>
+                          <span className="text-lg font-bold text-white">FSN Conference</span>
+                        </div>
+                      </motion.div>
+                    </Link>
                   </div>
 
                   {/* Mobile Search */}
