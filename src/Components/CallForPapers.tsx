@@ -28,6 +28,12 @@ const themes = [
     description: "Exploring synergistic partnerships for research and development.",
   },
   {
+    name: "AI in Food Science, Nutrition, and Health",
+    icon: FlaskConical,
+    color: "from-blue-500 to-indigo-600",
+    description: "Leveraging artificial intelligence to transform food science, nutrition research, and healthcare applications in the food industry.",
+  },
+  {
     name: "Addressing Malnutrition through Nutritional Fortification",
     icon: Apple,
     color: "from-violet-500 to-purple-600",
