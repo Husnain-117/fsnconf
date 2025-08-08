@@ -114,14 +114,7 @@ const Header: React.FC = () => {
   const toggleSection = (title: string, stateSetter: typeof setAnchorOpen) =>
     stateSetter((p) => ({ ...p, [title]: !p[title] }))
 
-  const smoothScroll = (href: string) => {
-    if (href.startsWith("#")) {
-      const element = document.querySelector(href)
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth" })
-      }
-    }
-  }
+
 
   /* ---------------------------------------------------------------------- */
   /*                                    UI                                    */
@@ -297,20 +290,12 @@ const Header: React.FC = () => {
                                         asChild
                                         variant="ghost"
                                         className="w-full justify-start rounded-lg px-4 py-3 text-slate-300 transition-all duration-300 hover:bg-slate-700/30 hover:text-white hover:translate-x-1"
-                                        onClick={(e) => {
-                                          if (item.href !== "#registration") {
-                                            e.preventDefault()
-                                            setMobileDrawerOpen(false)
-                                            setTimeout(() => smoothScroll(item.href), 100)
-                                          } else {
-                                            setMobileDrawerOpen(false)
-                                          }
-                                        }}
+                                        onClick={() => setMobileDrawerOpen(false)}
                                       >
-                                        <a href={item.href} className="flex items-center gap-3">
+                                        <Link to={item.href} className="flex items-center gap-3">
                                           <div className="w-1 h-1 bg-slate-400 rounded-full" />
                                           {item.label}
-                                        </a>
+                                        </Link>
                                       </Button>
                                     </motion.li>
                                   ))}
@@ -330,7 +315,7 @@ const Header: React.FC = () => {
                       onClick={() => setMobileDrawerOpen(false)}
                       className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                     >
-                      <a href="#registration">Register for Conference</a>
+                      <Link to="/registration">Register for Conference</Link>
                     </Button>
                   </div>
                 </motion.div>

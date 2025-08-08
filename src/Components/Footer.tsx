@@ -1,16 +1,17 @@
 "use client"
 
 import type React from "react"
+import { Link } from "react-router-dom"
 import { Mail, MapPin, Phone,  ArrowUp } from "lucide-react"
 
 
 
 const quickLinks = [
-  { name: "Home", href: "#home" },
-  { name: "Registration", href: "#registration" },
-  { name: "Speakers", href: "#speakers" },
-  { name: "Program", href: "#program" },
-  { name: "Contact", href: "#contact" },
+  { name: "Home", href: "/" },
+  { name: "Registration", href: "/registration" },
+  { name: "Speakers", href: "/speakers" },
+  { name: "Program", href: "/program" },
+  { name: "Contact", href: "/contact" },
 ]
 
 export const Footer: React.FC = () => {
@@ -41,12 +42,12 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-purple-100 hover:text-yellow-300 transition-colors duration-300 text-sm"
                   >
                     {link.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
