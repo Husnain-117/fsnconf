@@ -1,6 +1,8 @@
 "use client"
 
 import type React from "react"
+import Header from "./header";
+import Footer from "./Footer";
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import type { Variants } from "framer-motion"
@@ -150,6 +152,8 @@ export const AccommodationTravel: React.FC = () => {
   const [selectedHotel, setSelectedHotel] = useState<number | null>(null)
 
   return (
+    <>
+    <Header />
     <section
       id="accommodation"
       className="relative min-h-screen py-20 px-6 overflow-hidden"
@@ -588,6 +592,8 @@ export const AccommodationTravel: React.FC = () => {
         </motion.div>
       </motion.div>
     </section>
+    <Footer />
+    </>
   )
 }
 

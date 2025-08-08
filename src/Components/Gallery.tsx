@@ -4,6 +4,8 @@ import type React from "react"
 import { useState } from "react"
 import { PlayCircle, ImageIcon, Video, Download, Share2, Eye, X } from "lucide-react"
 import { Button } from "@/Components/ui/button"
+import Header from "./header";
+import Footer from "./Footer";
 
 const media = [
   {
@@ -81,6 +83,8 @@ export const Gallery: React.FC = () => {
   const filteredMedia = selectedCategory === "All" ? media : media.filter((item) => item.category === selectedCategory)
 
   return (
+    <>
+    <Header />
     <section id="gallery" className="min-h-screen py-16 px-6 bg-[#D8CFF2]">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -235,6 +239,8 @@ export const Gallery: React.FC = () => {
         </div>
       )}
     </section>
+    <Footer />
+    </>
   )
 }
 

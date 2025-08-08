@@ -1,6 +1,8 @@
 "use client"
 
 import type React from "react"
+import Header from "./header";
+import Footer from "./Footer";
 import {
   Handshake,
   Apple,
@@ -212,6 +214,8 @@ export const CallForPapers: React.FC = () => {
   }
 
   return (
+    <>
+    <Header />
     <section id="call-for-papers" className="min-h-screen py-16 px-6 bg-[#D8CFF2]">
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
@@ -292,6 +296,8 @@ export const CallForPapers: React.FC = () => {
         </div>
       </div>
     </section>
+    <Footer />
+    </>
   )
 }
 

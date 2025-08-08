@@ -1,6 +1,7 @@
 "use client"
 import type React from "react"
 import { useState, useEffect } from "react"
+import { Link } from "react-router-dom"
 import { motion, AnimatePresence} from "framer-motion"
 import { useSpring, animated } from "@react-spring/web"
 import { Button } from "@/Components/ui/button"
@@ -25,29 +26,28 @@ const navigationSections: NavigationSection[] = [
   {
     title: "Conference",
     items: [
-      { label: "Program", href: "#program" },
-      { label: "Speakers", href: "#speakers" },
+      { label: "Program", href: "/program" },
+      { label: "Speakers", href: "/speakers" },
     ],
   },
   {
     title: "Participation",
     items: [
-      { label: "Registration", href: "#registration" },
-      { label: "Call for Papers", href: "#call-for-papers" },
-      { label: "Abstract Guidelines", href: "#abstract-guidelines" },
+      { label: "Registration", href: "/registration" },
+      { label: "Call for Papers", href: "/call-for-papers" },
+      { label: "Abstract Guidelines", href: "/abstract-guidelines" },
     ],
   },
   {
     title: "Information",
     items: [
-      { label: "Organizers", href: "#organizers" },
-      { label: "Gallery", href: "#gallery" },
-     
+      { label: "Organizers", href: "/organizers" },
+      { label: "Gallery", href: "/gallery" },
     ],
   },
   {
     title: "Contact",
-    items: [{ label: "Contact Us", href: "#contact" }],
+    items: [{ label: "Contact Us", href: "/contact" }],
   },
 ]
 
@@ -135,24 +135,24 @@ const Header: React.FC = () => {
         <div className="container mx-auto flex h-20 items-center justify-between px-6 py-5 relative">
           {/* Logo --------------------------------------------------------- */}
           <animated.div style={logoSpring} className="flex-shrink-0 z-10">
-            <motion.a
-              href="#hero"
-              className="flex items-center gap-3 cursor-pointer"
+            <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-3 cursor-pointer"
             >
-              <img src={logo} alt="Logo" className="h-16 w-auto" />
-              <div className="flex flex-col">
-                {/* Desktop / Tablet Title */}
-                <span className="hidden md:inline text-xl font-black leading-tight">
-                  <span className="text-white">Food Science and Nutrition </span>
-                  <span className="text-yellow-500">Conference</span>
-                </span>
-                {/* Mobile Title */}
-                <span className="md:hidden text-xl font-black leading-tight text-white">FSN&nbsp;Conference</span>
-                
-              </div>
-            </motion.a>
+              <Link to="/" className="flex items-center gap-3">
+                <img src={logo} alt="Logo" className="h-16 w-auto" />
+                <div className="flex flex-col">
+                  {/* Desktop / Tablet Title */}
+                  <span className="hidden md:inline text-xl font-black leading-tight">
+                    <span className="text-white">Food Science and Nutrition </span>
+                    <span className="text-yellow-500">Conference</span>
+                  </span>
+                  {/* Mobile Title */}
+                  <span className="md:hidden text-xl font-black leading-tight text-white">FSN&nbsp;Conference</span>
+                </div>
+              </Link>
+            </motion.div>
           </animated.div>
 
 
@@ -173,17 +173,9 @@ const Header: React.FC = () => {
                   asChild
                   className="relative rounded-xl px-3 py-2 text-sm font-semibold text-slate-200 transition-all duration-300 hover:bg-yellow-500/20 hover:text-yellow-200 hover:shadow-lg backdrop-blur-sm border border-transparent hover:border-white/20"
                 >
-                  <a
-                    href={item.href}
-                    onClick={(e) => {
-                      if (item.href.startsWith("#")) {
-                        e.preventDefault();
-                        smoothScroll(item.href);
-                      }
-                    }}
-                  >
+                  <Link to={item.href} className="w-full h-full block">
                     {item.label}
-                  </a>
+                  </Link>
                 </Button>
               </motion.div>
             ))}

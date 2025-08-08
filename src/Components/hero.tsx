@@ -3,9 +3,11 @@
 import { useEffect, useState } from "react"
 import { motion, type Variants } from "framer-motion"
 import { Button } from "@/Components/ui/button"
+import { Link } from 'react-router-dom'
 import { Award, Clock, ArrowRight, Sparkles } from "lucide-react"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+
 
 interface TimeLeft {
   days: number
@@ -139,20 +141,24 @@ export default function Hero() {
         >
           
 
-          {/* Main Heading - reduced size */}
-          <motion.h2
-            variants={itemVariants}
-            className="text-4xl md:text-5xl lg:text-6xl font-black mb-3 mt-[120px] text-[#1a2233] drop-shadow-[0_2px_8px_rgba(0,0,0,0.09)]"
-          >
-            Advancing <span className="text-yellow-600">Food Science and Nutrition by Bridging Research, Policy, and Practice</span>
-          </motion.h2>
+                    {/* Main Heading */}
+          <motion.div variants={itemVariants} className="mt-[120px] text-center">
+                        <p className="inline-block bg-purple-200/50 text-[#6e58a5] font-bold text-lg md:text-xl uppercase tracking-widest px-6 py-2 rounded-full mb-4">
+              First International Conference on:
+            </p>
+            <h2
+              className="text-4xl md:text-5xl lg:text-6xl font-black text-[#6e58a5] drop-shadow-[0_2px_8px_rgba(0,0,0,0.09)]"
+            >
+              Advancing <span className="text-yellow-500">Food Science and Nutrition by Bridging Research, Policy, and Practice</span>
+            </h2>
+          </motion.div>
 
           {/* Subtitle - made smaller and more compact */}
           <motion.p
             variants={itemVariants}
             className="mb-6 text-base md:text-lg lg:text-xl font-medium text-[#233047]/90 leading-relaxed max-w-4xl"
           >
-            Join us at <b>FSNC 2025</b>, where global and local experts unite to address key issues in food science, nutrition, and public health. Hosted by <span className="font-semibold text-yellow-600"><b>COMSATS University Islamabad (Sahiwal Campus)</b></span>, in collaboration with the <span className="font-semibold">Higher Education Commission (HEC)</span> and <span className="font-semibold">Pakistan Society of Food Scientists and Technologists (PSFST)</span>, the conference aims to foster innovation, interdisciplinary collaboration, and research-to-policy translation in food and nutrition sciences.
+            Join us at <b>FSNC 2025</b>, where global and local experts unite to address key issues in food science, nutrition, and public health. Hosted by <span className="font-semibold text-yellow-500"><b>COMSATS University Islamabad (Sahiwal Campus)</b></span>, in collaboration with the <span className="font-semibold">Higher Education Commission (HEC)</span> and <span className="font-semibold">Pakistan Society of Food Scientists and Technologists (PSFST)</span>, the conference aims to foster innovation, interdisciplinary collaboration, and research-to-policy translation in food and nutrition sciences.
             <br /><br />
             In celebration of <span className="font-semibold text-fuchsia-700">World Food Day 2025</span>, themed <i>"Hand in Hand for Better Foods and a Better Future,"</i> this conference echoes the global call to action by bringing together scientists, policymakers, health professionals, and industry experts to collaborate for a healthier, food-secure world.
           </motion.p>
@@ -229,34 +235,35 @@ export default function Hero() {
             variants={itemVariants}
             className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-md mx-auto"
           >
-            <Button
-              asChild
-              className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-gradient-to-r from-yellow-400 via-yellow-500 to-purple-500 px-8 py-4 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:shadow-yellow-400/30 hover:scale-102 border-0"
-            >
-              <motion.a
-                href="#registration"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="flex items-center gap-2"
-                transition={{ duration: 0.2 }}
+                        <Link to="/registration">
+              <Button
+                asChild
+                className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-gradient-to-r from-yellow-400 via-yellow-500 to-purple-500 px-8 py-4 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:shadow-yellow-400/30 hover:scale-102 border-0"
               >
-                <motion.div
-                  animate={{ rotate: [0, 360] }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-                  className="group-hover:animate-none"
+                <motion.a
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="flex items-center gap-2"
+                  transition={{ duration: 0.2 }}
                 >
-                  <Award className="w-4 h-4" />
-                </motion.div>
-                Register Now
-                <motion.div
-                  animate={{ x: [0, 3, 0] }}
-                  transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                >
-                  <ArrowRight className="w-4 h-4" />
-                </motion.div>
-                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
-              </motion.a>
-            </Button>
+                  <motion.div
+                    animate={{ rotate: [0, 360] }}
+                    transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
+                    className="group-hover:animate-none"
+                  >
+                    <Award className="w-4 h-4" />
+                  </motion.div>
+                  Register Now
+                  <motion.div
+                    animate={{ x: [0, 3, 0] }}
+                    transition={{ duration: 1, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
+                  >
+                    <ArrowRight className="w-4 h-4" />
+                  </motion.div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500" />
+                </motion.a>
+              </Button>
+            </Link>
 
             <Button
               variant="outline"

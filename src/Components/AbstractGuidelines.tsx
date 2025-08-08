@@ -1,6 +1,8 @@
 "use client"
 
 import type React from "react"
+import Header from "./header";
+import Footer from "./Footer";
 import { useState } from "react"
 import { FileText, UploadCloud, Mic2, Download, ArrowRight, CheckCircle } from "lucide-react"
 import { toast } from "react-toastify"
@@ -89,6 +91,8 @@ export const AbstractGuidelines: React.FC = () => {
   }
 
   return (
+    <>
+    <Header />
     <section id="abstract-guidelines" className="min-h-screen py-16 px-6 bg-[#D8CFF2] flex items-center justify-center">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -205,6 +209,8 @@ export const AbstractGuidelines: React.FC = () => {
         )}
       </div>
     </section>
+    <Footer />
+    </>
   )
 }
 

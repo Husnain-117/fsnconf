@@ -26,7 +26,10 @@ interface Speaker {
 }
 
 const ADMIN_KEY = 'systoid';
-const API_URL = 'https://fsnconference-backend.vercel.app/api';
+const API_URL =
+  window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
+    : 'https://fsnconference-backend.vercel.app/api';
 
 export default function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -49,6 +52,7 @@ export default function Admin() {
     website: '',
   });
   const [photo, setPhoto] = useState<File | null>(null);
+  const [editingSpeakerId, setEditingSpeakerId] = useState<string | null>(null);
   const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string | null>(null);
 
   const fetchSpeakers = async () => {
@@ -120,21 +124,20 @@ export default function Admin() {
     if (photoInput) photoInput.value = '';
   };
 
-  const handleFormSubmit = async (e: FormEvent) => {
+      const handleFormSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!formData.name) {
       toast.warn('Speaker Name is a required field.');
       return;
     }
     setIsLoading(true);
+
     const submission = new FormData();
     submission.append('name', formData.name);
     submission.append('title', formData.title);
     submission.append('company', formData.company);
     submission.append('bio', formData.bio);
     submission.append('expertise', formData.expertise);
-    submission.append('talkTitle', formData.talkTitle);
-    submission.append('talkDescription', formData.talkDescription);
     submission.append('type', formData.type);
     submission.append('featured', String(formData.featured));
 
@@ -150,32 +153,85 @@ export default function Admin() {
     }
 
     try {
-      const response = await fetch(`${API_URL}/speakers`, {
-        method: 'POST',
-        body: submission,
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to add speaker.');
+      let response;
+      if (editingSpeakerId) {
+        // Update existing speaker
+        response = await fetch(`${API_URL}/speakers/${editingSpeakerId}`, {
+          method: 'PUT',
+          body: submission,
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to update speaker.');
+        }
+        toast.success('Speaker updated successfully!');
+      } else {
+        // Add new speaker
+        response = await fetch(`${API_URL}/speakers`, {
+          method: 'POST',
+          body: submission,
+        });
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Failed to add speaker.');
+        }
+        toast.success('Speaker added successfully!');
       }
-      toast.success('Speaker added successfully!');
+      
       fetchSpeakers(); // Refresh the list
-      // Reset form
-      setFormData({
-        name: '', title: '', company: '', bio: '', expertise: '',
-        talkTitle: '', talkDescription: '', type: 'Invited', featured: false,
-        linkedin: '', twitter: '', website: ''
-      });
-      removePhoto(); // Reset photo and preview
+      handleCancelEdit(); // Reset form
+
     } catch (error) {
+      console.error('Failed to save speaker:', error);
       if (error instanceof Error) {
         toast.error(error.message);
       } else {
-        toast.error('An error occurred.');
+        toast.error('An error occurred while saving speaker.');
       }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleEdit = (speaker: Speaker) => {
+    setEditingSpeakerId(speaker._id);
+    setFormData({
+      name: speaker.name,
+      title: speaker.title,
+      company: speaker.company,
+      bio: speaker.bio,
+      expertise: speaker.expertise.join(', '),
+      type: speaker.type,
+      featured: speaker.featured,
+      linkedin: speaker.social?.linkedin || '',
+      twitter: speaker.social?.twitter || '',
+      website: speaker.social?.website || '',
+      talkTitle: '',
+      talkDescription: '',
+    });
+    setPhoto(null);
+    setPhotoPreviewUrl(speaker.image || null);
+    window.scrollTo(0, 0);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingSpeakerId(null);
+    setFormData({
+      name: '',
+      title: '',
+      company: '',
+      bio: '',
+      expertise: '',
+      talkTitle: '',
+      talkDescription: '',
+      type: 'Invited',
+      featured: false,
+      linkedin: '',
+      twitter: '',
+      website: '',
+    });
+    setPhoto(null);
+    setPhotoPreviewUrl(null);
   };
 
   const handleDeleteSpeaker = async (id: string) => {
@@ -240,7 +296,7 @@ export default function Admin() {
         <div className="bg-white shadow-xl rounded-2xl p-8 mb-12 border border-gray-100">
           <h2 className="text-2xl font-bold text-slate-700 mb-6 flex items-center">
             <User className="mr-3 text-purple-500" size={24} />
-            Add New Speaker
+            <h3>{editingSpeakerId ? 'Edit Speaker' : 'Add New Speaker'}</h3>
           </h2>
           <form onSubmit={handleFormSubmit} className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6">
             {/* Column 1 */}
@@ -331,7 +387,11 @@ export default function Admin() {
 
             <div className="lg:col-span-2 flex justify-end pt-4">
               <button type="submit" disabled={isLoading} className="h-12 px-8 bg-gradient-to-r from-purple-600 to-violet-600 text-white font-bold rounded-lg hover:from-purple-700 hover:to-violet-700 transition-all duration-300 flex items-center justify-center shadow-lg hover:shadow-xl disabled:opacity-60 disabled:cursor-not-allowed">
-                {isLoading ? <><Loader className="animate-spin mr-2" size={20} /> Processing...</> : <><Upload className="mr-2" size={20} /> Add Speaker</>}
+                {isLoading ? (
+                  <><Loader className="animate-spin mr-2" size={20} /> Processing...</>
+                ) : (
+                  <><Upload className="mr-2" size={20} /> {editingSpeakerId ? 'Update Speaker' : 'Add Speaker'}</>
+                )}
               </button>
             </div>
           </form>
@@ -351,7 +411,7 @@ export default function Admin() {
                 <div key={speaker.id} className="flex flex-col bg-slate-50 p-4 rounded-lg border border-slate-200 shadow-sm hover:shadow-md transition-all duration-200">
                   <div className="flex items-center mb-4">
                     <img
-                      src={speaker.image ? `${speaker.image.startsWith('http') ? '' : API_URL}${speaker.image}` : '/placeholder-user.svg'}
+                      src={speaker.image && (speaker.image.startsWith('http') ? speaker.image : `${API_URL}${speaker.image}`) || '/placeholder-user.svg'}
                       alt={speaker.name}
                       className="w-20 h-20 rounded-full object-cover mr-4 border-2 border-purple-300 shadow-sm"
                       onError={(e) => {
@@ -373,10 +433,12 @@ export default function Admin() {
                     <p className="text-slate-600 text-xs font-medium">Expertise: {speaker.expertise.join(', ')}</p>
                   </div>
                   <div className="mt-4 pt-4 border-t border-slate-200 flex justify-end">
-                    <button
-                      onClick={() => handleDeleteSpeaker(speaker.id)}
-                      className="p-2 bg-red-50 text-red-600 rounded-full hover:bg-red-100 transition-colors flex items-center gap-1 text-sm font-medium"
-                    >
+                    <button onClick={() => handleEdit(speaker)} className="text-blue-500 hover:text-blue-700 mr-4">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828zM5 12V7a2 2 0 012-2h2.586l-4 4H5zM3 15a2 2 0 100 4 2 2 0 000-4z" />
+                      </svg>
+                    </button>
+                    <button onClick={() => handleDeleteSpeaker(speaker._id)} className="text-red-500 hover:text-red-700">
                       <Trash2 size={16} /> Delete
                     </button>
                   </div>

@@ -3,17 +3,21 @@ import { useSpeakerStore, type Speaker } from "@/store/speakerStore"; // Update 
 import { Button } from "@/Components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, X, Linkedin, Twitter, Globe } from 'lucide-react';
+import Header from "./header";
+import Footer from "./Footer";
 
-const BASE_API_URL = 'https://fsnconference-backend.vercel.app'; // Production API URL
+
+const BASE_API_URL =
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : 'https://fsnconference-backend.vercel.app'; // Production API URL
 
 // Helper function to construct proper image URL
 const getImageUrl = (imagePath?: string): string | undefined => {
-  if (!imagePath) return undefined;
-  
-  // If it's already a full URL or a data URI, return as is
-  if (imagePath.startsWith('http') || imagePath.startsWith('data:')) return imagePath;
-  
-  // Clean the path and construct full URL
+  if (!imagePath || imagePath.trim() === '' || imagePath.includes('/undefined')) return undefined;
+  // If it's already a full URL (http/https) or a data URI, return as is
+  if (/^(http|https):\/\//.test(imagePath) || imagePath.startsWith('data:')) return imagePath;
+  // Otherwise, treat as legacy local path
   const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
   return `${BASE_API_URL}${cleanPath}`;
 };
@@ -145,6 +149,8 @@ const Speakers: React.FC = () => {
 
 
   return (
+    <>
+    <Header />
     <section id="speakers" className="min-h-screen py-16 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -168,7 +174,7 @@ const Speakers: React.FC = () => {
             >
               {visibleSpeakers.map((sp, idx) => (
                 <motion.div
-                  key={sp.id}
+                  key={sp._id}
                   layout
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
@@ -229,6 +235,8 @@ const Speakers: React.FC = () => {
         )}
       </AnimatePresence>
     </section>
+    <Footer />
+    </>
   );
 };
 

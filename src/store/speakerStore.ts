@@ -3,10 +3,14 @@ import { toast } from 'react-toastify';
 
 
 // Production API URL
-const API_URL = 'https://fsnconference-backend.vercel.app/api';
+const API_URL =
+  typeof window !== 'undefined' && window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api'
+    : 'https://fsnconference-backend.vercel.app/api';
 
 export interface Speaker {
-  id: string;
+  _id: string; // Add MongoDB's _id
+
   name: string;
   title: string;
   company: string;
@@ -30,6 +34,7 @@ interface SpeakerState {
   error: string | null;
   fetchSpeakers: () => Promise<void>;
   addSpeaker: (speakerData: FormData) => Promise<Speaker>;
+  updateSpeaker: (id: string, speakerData: FormData) => Promise<void>;
   deleteSpeaker: (id: string) => Promise<void>;
   getSpeakerById: (id: string) => Speaker | undefined;
   getSpeakersByType: (type: 'keynote' | 'session' | 'invited' | 'Session Chair') => Speaker[];
@@ -48,12 +53,32 @@ export const useSpeakerStore = create<SpeakerState>((set, get) => ({
       if (!response.ok) {
         throw new Error('Failed to fetch speakers');
       }
-      const data = await response.json();
-      // Map MongoDB _id to id for easier usage in the UI
-      const speakers = data.map((s: any) => ({ ...s, id: s._id }));
+      const speakers = await response.json();
       set({ speakers, isLoading: false });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to fetch speakers';
+      set({ error: errorMessage, isLoading: false });
+      toast.error(errorMessage);
+    }
+  },
+
+  updateSpeaker: async (id, speakerData) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch(`${API_URL}/speakers/${id}`, {
+        method: 'PUT',
+        body: speakerData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update speaker');
+      }
+
+      toast.success('Speaker updated successfully!');
+      get().fetchSpeakers(); // Re-fetch to sync the list
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update speaker';
       set({ error: errorMessage, isLoading: false });
       toast.error(errorMessage);
     }
@@ -107,7 +132,7 @@ export const useSpeakerStore = create<SpeakerState>((set, get) => ({
   },
 
   getSpeakerById: (id) => {
-    return get().speakers.find((speaker) => speaker.id === id);
+    return get().speakers.find((speaker) => speaker._id === id);
   },
 
   getSpeakersByType: (type) => {

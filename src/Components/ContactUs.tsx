@@ -1,37 +1,37 @@
 "use client"
 
+
 import type React from "react"
+import Header from "./header";
+import Footer from "./Footer";
 import { useState } from "react"
-import { Mail, Phone, MapPin, Send, MessageSquare, CheckCircle, ArrowRight } from "lucide-react"
+import { Mail, Phone, MapPin, Send, MessageSquare, CheckCircle, ArrowRight, User } from "lucide-react"
 import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
 import { Label } from "@/Components/ui/label"
 import { Textarea } from "@/Components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/Components/ui/select"
 
-const contactMethods = [
+const focalPersons = [
   {
-    icon: <Mail className="h-6 w-6" />,
-    title: "Email Us",
-    contact: "fsnconference@cuisahiwal.edu.pk",
-    subContact: "registration@cuisahiwal.edu.pk",
+    role: "Focal Person",
+    name: "Dr. Muhammad Nadeem",
+    designation: "Associate Professor, Dept. of Biosciences",
+    emails: ["nadeem@cuisahiwal.edu.pk", "fsnconference@cuisahiwal.edu.pk"],
+    phone: "+92-300-9200474",
+    icon: <User className="h-8 w-8 text-white" />,
     color: "from-purple-600 to-violet-600",
   },
   {
-    icon: <Phone className="h-6 w-6" />,
-    title: "Call Us",
-    contact: "03009200474 ",
-    subContact: "03009200474 ",
+    role: "Conference Secretary",
+    name: "Dr. Muhammad Wasim Sajid",
+    designation: "Associate Professor, Dept. of Biosciences",
+    emails: ["muhammad.wasim@cuisahiwal.edu.pk", "fsnconference@cuisahiwal.edu.pk"],
+    phone: "+92-333-6967095",
+    icon: <User className="h-8 w-8 text-white" />,
     color: "from-yellow-500 to-amber-500",
   },
-  {
-    icon: <MapPin className="h-6 w-6" />,
-    title: "Visit Us",
-    contact: "COMSATS University Islamabad",
-    subContact: "Sahiwal Campus, Pakistan",
-    color: "from-purple-500 to-pink-500",
-  },
-]
+];
 
 export const Contact: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -88,6 +88,8 @@ export const Contact: React.FC = () => {
   }
 
   return (
+    <>
+    <Header />
     <section id="contact" className="min-h-screen py-16 px-6 bg-white flex items-center justify-center">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
@@ -102,33 +104,64 @@ export const Contact: React.FC = () => {
           </p>
         </div>
 
-        {/* Contact Methods */}
-        <div className="grid lg:grid-cols-3 gap-6 mb-12">
-          {contactMethods.map((method) => (
+        {/* Focal Persons */}
+        <div className="grid lg:grid-cols-3 gap-8 mb-12">
+          {focalPersons.map((person) => (
             <div
-              key={method.title}
-              className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300"
+              key={person.name}
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col"
             >
               {/* Header */}
-              <div className={`bg-gradient-to-r ${method.color} p-6 text-white`}>
-                <div className="text-center space-y-3">
-                  <div className="flex justify-center">
-                    <div className="p-3 bg-white/20 rounded-2xl">{method.icon}</div>
+              <div className={`bg-gradient-to-r ${person.color} p-6 text-white`}>
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-2xl">{person.icon}</div>
+                  <div>
+                    <h3 className="text-xl font-bold">{person.role}</h3>
+                    <p className="text-white/90">{person.name}</p>
                   </div>
-                  <h3 className="text-xl font-bold">{method.title}</h3>
                 </div>
               </div>
 
               {/* Content */}
-              <div className="p-6 space-y-3">
-                <div className="text-center space-y-2">
-                  <p className="font-semibold text-slate-800">{method.contact}</p>
-                  <p className="text-slate-600 text-sm">{method.subContact}</p>
+              <div className="p-6 space-y-4 flex-grow flex flex-col">
+                <p className="text-slate-600 text-center font-medium flex-grow">{person.designation}</p>
+                <div className="space-y-3 pt-4 border-t border-gray-200">
+                  <a href={`tel:${person.phone}`} className="flex items-center gap-3 text-slate-800 hover:text-purple-600 transition-colors duration-200 group">
+                    <Phone className="h-5 w-5 text-purple-500 group-hover:animate-pulse" />
+                    <span className="font-semibold">{person.phone}</span>
+                  </a>
+                  {person.emails.map(email => (
+                     <a key={email} href={`mailto:${email}`} className="flex items-center gap-3 text-slate-800 hover:text-yellow-600 transition-colors duration-200 group">
+                       <Mail className="h-5 w-5 text-yellow-500 group-hover:animate-pulse" />
+                       <span className="font-semibold break-all">{email}</span>
+                     </a>
+                  ))}
                 </div>
-                
               </div>
             </div>
           ))}
+          {/* Visit Us Card */}
+            <div
+              key="visit-us"
+              className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col"
+            >
+              {/* Header */}
+              <div className={`bg-gradient-to-r from-teal-500 to-cyan-500 p-6 text-white`}>
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-2xl"><MapPin className="h-8 w-8 text-white" /></div>
+                  <div>
+                    <h3 className="text-xl font-bold">Visit Us</h3>
+                    <p className="text-white/90">Conference Venue</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-6 space-y-2 flex-grow flex flex-col justify-center">
+                <p className="text-slate-800 text-center font-semibold text-lg">COMSATS University Islamabad</p>
+                <p className="text-slate-600 text-center">Sahiwal Campus, Pakistan</p>
+              </div>
+            </div>
         </div>
 
         {/* Contact Form */}
@@ -275,6 +308,8 @@ export const Contact: React.FC = () => {
         </div>
       </div>
     </section>
+    <Footer />
+    </>
   )
 }
 

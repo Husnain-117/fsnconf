@@ -1,6 +1,8 @@
 "use client"
 
 import type React from "react"
+import Header from "./header";
+import Footer from "./Footer";
 import { useState, useCallback, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
 import { CheckCircle, UserPlus, ArrowRight, Users, Award, X, Upload, Building, User, DollarSign, FileText, Trash2 } from "lucide-react"
@@ -176,6 +178,8 @@ export const Registration: React.FC = () => {
   }
 
   return (
+    <>
+    <Header />
     <section id="registration" className={showForm ? "min-h-screen bg-white" : "min-h-screen py-16 px-6 bg-gradient-to-br from-purple-50 via-white to-yellow-50"}>
       {showForm ? (
         <>
@@ -605,6 +609,8 @@ export const Registration: React.FC = () => {
         </div>
       )}
     </section>
+    <Footer />
+    </>
   )
 }
 

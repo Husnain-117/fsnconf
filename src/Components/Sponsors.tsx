@@ -4,6 +4,9 @@ import type React from "react"
 import { useState } from "react"
 import { Award, Building2, Handshake, Crown, Trophy, Medal, Heart, Users, CheckCircle, ArrowRight } from "lucide-react"
 import { Button } from "@/Components/ui/button"
+import Header from "./header";
+import Footer from "./Footer";
+
 
 const partners = [
   {
@@ -192,6 +195,8 @@ export const Sponsors: React.FC = () => {
   }
 
   return (
+    <>
+    <Header />
     <section className="min-h-screen py-16 px-6 bg-[#D8CFF2]">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
@@ -280,6 +285,8 @@ export const Sponsors: React.FC = () => {
         </div>
       </div>
     </section>
+    <Footer />
+    </>
   )
 }
 
