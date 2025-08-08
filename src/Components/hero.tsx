@@ -147,7 +147,7 @@ export default function Hero() {
               First International Conference on:
             </p>
             <h2
-              className="text-4xl md:text-5xl lg:text-6xl font-black text-[#6e58a5] drop-shadow-[0_2px_8px_rgba(0,0,0,0.09)]"
+              className="text-4xl md:text-5xl lg:text-6xl font-black text-yellow-500 drop-shadow-[0_2px_8px_rgba(0,0,0,0.09)]"
             >
               Advancing <span className="text-yellow-500">Food Science and Nutrition by Bridging Research, Policy, and Practice</span>
             </h2>
@@ -159,6 +159,8 @@ export default function Hero() {
             className="mb-6 text-base md:text-lg lg:text-xl font-medium text-[#233047]/90 leading-relaxed max-w-4xl"
           >
             Join us at <b>FSNC 2025</b>, where global and local experts unite to address key issues in food science, nutrition, and public health. Hosted by <span className="font-semibold text-yellow-500"><b>COMSATS University Islamabad (Sahiwal Campus)</b></span>, in collaboration with the <span className="font-semibold">Higher Education Commission (HEC)</span> and <span className="font-semibold">Pakistan Society of Food Scientists and Technologists (PSFST)</span>, the conference aims to foster innovation, interdisciplinary collaboration, and research-to-policy translation in food and nutrition sciences.
+            <br /><br />
+            <span className="text-red-600 font-medium">This groundbreaking conference represents a pivotal moment in advancing food science and nutrition research, bringing together the brightest minds to tackle the most pressing challenges facing our global food systems today.</span>
             <br /><br />
             In celebration of <span className="font-semibold text-fuchsia-700">World Food Day 2025</span>, themed <i>"Hand in Hand for Better Foods and a Better Future,"</i> this conference echoes the global call to action by bringing together scientists, policymakers, health professionals, and industry experts to collaborate for a healthier, food-secure world.
           </motion.p>
@@ -299,7 +301,7 @@ export default function Hero() {
               ) : (
                 <span className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
-                  Download PDF
+                  Brusher Download PDF
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                 </span>
               )}

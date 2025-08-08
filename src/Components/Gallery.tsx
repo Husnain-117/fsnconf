@@ -89,9 +89,9 @@ export const Gallery: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
+          <h2 className="text-4xl md:text-5xl font-black text-yellow-500 mb-4">
             Event{" "}
-            <span className="text-yellow-600">
+            <span className="text-yellow-500">
               Gallery
             </span>
           </h2>

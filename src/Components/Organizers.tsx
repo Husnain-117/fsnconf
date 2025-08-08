@@ -73,9 +73,9 @@ export const Organizers: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
+          <h2 className="text-4xl md:text-5xl font-black text-yellow-500 mb-4">
             Meet Our{" "}
-            <span className="bg-gradient-to-r from-purple-600 to-yellow-500 bg-clip-text text-transparent">
+            <span className="text-yellow-500">
               Organizers
             </span>
           </h2>

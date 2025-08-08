@@ -19,9 +19,9 @@ export const Program: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
+            <h2 className="text-4xl md:text-5xl font-black text-yellow-500 mb-4">
               Conference{" "}
-              <span className="text-yellow-600">Program</span>
+              <span className="text-yellow-500">Program</span>
             </h2>
             <p className="text-lg text-slate-600 max-w-4xl mx-auto mb-8">
               <i>Discover an extraordinary lineup of sessions, presentations, and networking opportunities designed to

@@ -155,8 +155,8 @@ const Speakers: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
-            Our <span className="text-yellow-600">Speakers</span>
+          <h2 className="text-4xl md:text-5xl font-black text-yellow-500 mb-4">
+            Our <span className="text-yellow-500">Speakers</span>
           </h2>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
             <i>Learn from global experts, innovators, and researchers.</i>

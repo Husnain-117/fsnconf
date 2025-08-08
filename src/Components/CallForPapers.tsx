@@ -220,9 +220,9 @@ export const CallForPapers: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header Section */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-slate-800 mb-4">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black text-yellow-500 mb-4">
             Call for{" "}
-            <span className="text-yellow-600">Papers</span>
+            <span className="text-yellow-500">Papers</span>
           </h2>
           <p className="text-xl text-slate-600 max-w-4xl mx-auto leading-relaxed">
            <i> We invite original research abstracts for oral and poster presentations. Open to students, researchers,

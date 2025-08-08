@@ -94,9 +94,9 @@ export const Contact: React.FC = () => {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
+          <h2 className="text-4xl md:text-5xl font-black text-yellow-500 mb-4">
             Get In{" "}
-            <span className="text-yellow-600">Touch</span>
+            <span className="text-yellow-500">Touch</span>
           </h2>
           <p className="text-lg text-slate-600 max-w-3xl mx-auto">
            <i>Have questions about the conference? Need assistance with registration? Our dedicated team is here to help
@@ -146,7 +146,7 @@ export const Contact: React.FC = () => {
               className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-300 flex flex-col"
             >
               {/* Header */}
-              <div className={`bg-gradient-to-r from-teal-500 to-cyan-500 p-6 text-white`}>
+              <div className={`bg-gradient-to-r from-yellow-500 to-cyan-500 p-6 text-white`}>
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-white/20 rounded-2xl"><MapPin className="h-8 w-8 text-white" /></div>
                   <div>
