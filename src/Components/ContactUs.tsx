@@ -1,10 +1,10 @@
 "use client"
 
-
 import type React from "react"
 import Header from "./header";
 import Footer from "./Footer";
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
 import { Mail, Phone, MapPin, Send, MessageSquare, CheckCircle, ArrowRight, User } from "lucide-react"
 import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
@@ -34,14 +34,26 @@ const focalPersons = [
 ];
 
 export const Contact: React.FC = () => {
+  const location = useLocation()
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     organization: "",
     subject: "",
     message: "",
-    inquiryType: "",
+    inquiryType: "sponsorship", // Default to sponsorship for pre-filled messages
   })
+
+  // Handle pre-filled message from state
+  useEffect(() => {
+    if (location.state?.message) {
+      setFormData(prev => ({
+        ...prev,
+        message: location.state.message,
+        inquiryType: "sponsorship"
+      }))
+    }
+  }, [location.state])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState<string | null>(null)

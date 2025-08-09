@@ -42,6 +42,7 @@ const navigationSections: NavigationSection[] = [
     title: "Information",
     items: [
       { label: "Organizers", href: "/organizers" },
+      { label: "Sponsors", href: "/sponsors" },
       { label: "Gallery", href: "/gallery" },
     ],
   },

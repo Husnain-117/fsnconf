@@ -143,8 +143,8 @@ export default function Hero() {
 
                     {/* Main Heading */}
           <motion.div variants={itemVariants} className="mt-[120px] text-center">
-                        <p className="inline-block bg-purple-200/50 text-[#6e58a5] font-bold text-lg md:text-xl uppercase tracking-widest px-6 py-2 rounded-full mb-4">
-              First International Conference on:
+                        <p className="inline-block bg-purple-200/50 text-[#6e58a5] font-bold text-lg md:text-xl  tracking-widest px-6 py-2 rounded-full mb-4">
+              First International Conference on
             </p>
             <h2
               className="text-4xl md:text-5xl lg:text-6xl font-black text-yellow-500 drop-shadow-[0_2px_8px_rgba(0,0,0,0.09)]"
@@ -157,6 +157,9 @@ export default function Hero() {
           <motion.div variants={itemVariants} className="space-y-6 max-w-4xl">
             <p className="text-lg md:text-xl lg:text-2xl font-medium text-[#233047]/90 leading-relaxed">
               Join us at <b>FSNC 2025</b>, where global and local experts unite to address key issues in food science, nutrition, and public health. Hosted by <span className="font-semibold text-yellow-500">COMSATS University Islamabad (Sahiwal Campus)</span>, in collaboration with the <span className="font-semibold">Higher Education Commission (HEC)</span> and <span className="font-semibold">Pakistan Society of Food Scientists and Technologists (PSFST)</span>, the conference aims to foster innovation, interdisciplinary collaboration, and research-to-policy translation in food and nutrition sciences.
+            </p>
+            <p className="text-lg md:text-xl lg:text-2xl font-medium text-[#233047]/90 leading-relaxed">
+              A key focus of this year's conference is the transformative role of <span className="font-semibold text-yellow-500">Artificial Intelligence (AI)</span> in revolutionizing food science, nutrition, public health, and the food industry.
             </p>
             <p className="text-lg md:text-xl lg:text-2xl font-medium text-[#233047]/90 leading-relaxed">
               This groundbreaking conference represents a pivotal moment in advancing food science and nutrition research, bringing together the brightest minds to tackle the most pressing challenges facing our global food systems today.

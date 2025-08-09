@@ -2,6 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
+import { Link } from "react-router-dom"
 import { Award, Building2, Handshake, Crown, Trophy, Medal, Heart, Users, CheckCircle, ArrowRight } from "lucide-react"
 import { Button } from "@/Components/ui/button"
 import Header from "./header";
@@ -146,12 +147,13 @@ export const Sponsors: React.FC = () => {
                     </ul>
                   </div>
                   <Button
+                    asChild
                     className={`w-full bg-gradient-to-r ${tier.color} hover:opacity-90 text-white font-bold rounded-xl py-2 transition-all duration-300`}
                   >
-                    <div className="flex items-center justify-center gap-2">
+                    <Link to="/contact" state={{ message: `I'm interested in the ${tier.tier} sponsorship package (${tier.amount})` }} className="flex items-center justify-center gap-2">
                       Choose {tier.tier}
                       <ArrowRight className="w-4 h-4" />
-                    </div>
+                    </Link>
                   </Button>
                 </div>
               </div>
@@ -172,11 +174,13 @@ export const Sponsors: React.FC = () => {
                 </div>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button
-                    onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+                    asChild
                     className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-3 rounded-full transition-all duration-300 hover:scale-105"
                   >
-                    <Handshake className="w-5 h-5 mr-2" />
-                    Partner With Us
+                    <Link to="/contact" state={{ message: "I'm interested in partnering with FSNC 2025" }} className="flex items-center">
+                      <Handshake className="w-5 h-5 mr-2" />
+                      Partner With Us
+                    </Link>
                   </Button>
                   <Button
                     onClick={() => setCurrentPage(1)}

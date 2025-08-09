@@ -182,28 +182,56 @@ const Speakers: React.FC = () => {
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
                   className="bg-white border rounded-2xl shadow hover:shadow-xl transition-all cursor-pointer group" onClick={() => setSelectedSpeaker(sp)}
                 >
+                  <div className="relative">
                   <SpeakerImage
                     src={sp.image}
                     alt={sp.name}
-                    className="w-full h-48 object-cover rounded-t-2xl"
+                    className="w-full h-40 object-cover rounded-t-2xl"
                   />
-                  <div className="p-4 text-center space-y-2">
-                    <h4 className="font-bold text-slate-800 text-lg group-hover:text-yellow-600 transition-colors">
-                      {sp.name}
-                    </h4>
-                    <p className="text-sm text-slate-600">{sp.title}</p>
-                    <p className="text-xs text-slate-500 font-medium mt-2 italic">{sp.talkTitle}</p>
-                    <span
-                      className={`inline-block mt-2 px-3 py-1 text-xs font-semibold rounded-full ${
-                        sp.featured
-                          ? "bg-yellow-100 text-yellow-800"
-                          : sp.type === "Session Chair"
-                          ? "bg-purple-100 text-purple-800"
-                          : "bg-pink-100 text-pink-800"
-                      }`}
-                    >
-                      {sp.featured ? "Keynote" : sp.type}
-                    </span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-t-2xl" />
+                </div>
+                  <div className="p-5 space-y-3">
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-slate-800 text-lg group-hover:text-yellow-600 transition-colors line-clamp-1" title={sp.name}>
+                        {sp.name}
+                      </h4>
+                      <p className="text-sm text-slate-600 font-medium">{sp.company || sp.title}</p>
+                    </div>
+                    
+                    {sp.expertise && sp.expertise.length > 0 && (
+                      <div className="mt-2">
+                        <div className="text-xs text-slate-500 font-medium mb-1">Expertise:</div>
+                        <div className="flex flex-wrap gap-1.5">
+                          {sp.expertise.slice(0, 3).map((exp, idx) => (
+                            <span 
+                              key={idx} 
+                              className="inline-block px-2.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 rounded-full"
+                            >
+                              {exp}
+                            </span>
+                          ))}
+                          {sp.expertise.length > 3 && (
+                            <span className="inline-block px-2 py-0.5 text-xs font-medium text-slate-400">
+                              +{sp.expertise.length - 3} more
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="pt-2">
+                      <span
+                        className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
+                          sp.featured
+                            ? "bg-yellow-100 text-yellow-800"
+                            : sp.type === "Session Chair"
+                            ? "bg-purple-100 text-purple-800"
+                            : "bg-slate-100 text-slate-800"
+                        }`}
+                      >
+                        {sp.featured ? "Keynote" : sp.type}
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               ))}

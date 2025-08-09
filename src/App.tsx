@@ -10,6 +10,7 @@ import AbstractGuidelines from './Components/AbstractGuidelines';
 import Organizers from './Components/Organizers';
 import Gallery from './Components/Gallery';
 import ContactUs from './Components/ContactUs';
+import Sponsors from './Components/Sponsors';
 import './App.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/organizers" element={<Organizers />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="/sponsors" element={<Sponsors />} />
       </Routes>
     </Router>
   );
