@@ -116,13 +116,7 @@ const SpeakerDetailModal: React.FC<{ speaker: Speaker; onClose: () => void }> = 
             </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t">
-            <h3 className="text-xl font-bold text-slate-800 mb-2">About</h3>
-            <p className="text-slate-600 whitespace-pre-wrap">{speaker.bio}</p>
-
-            <h3 className="text-xl font-bold text-slate-800 mt-6 mb-2">Talk Description</h3>
-            <p className="text-slate-600 whitespace-pre-wrap">{speaker.talkDescription}</p>
-          </div>
+          {/* Removed About and Talk Description sections as per request */}
         </div>
       </motion.div>
     </motion.div>
