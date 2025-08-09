@@ -156,13 +156,15 @@ export default function Hero() {
           {/* Subtitle - made smaller and more compact */}
           <motion.p
             variants={itemVariants}
-            className="mb-6 text-base md:text-lg lg:text-xl font-medium text-[#233047]/90 leading-relaxed max-w-4xl"
+            className="mb-6 text-lg md:text-xl lg:text-2xl font-medium text-[#233047]/90 leading-relaxed max-w-4xl"
           >
             Join us at <b>FSNC 2025</b>, where global and local experts unite to address key issues in food science, nutrition, and public health. Hosted by <span className="font-semibold text-yellow-500"><b>COMSATS University Islamabad (Sahiwal Campus)</b></span>, in collaboration with the <span className="font-semibold">Higher Education Commission (HEC)</span> and <span className="font-semibold">Pakistan Society of Food Scientists and Technologists (PSFST)</span>, the conference aims to foster innovation, interdisciplinary collaboration, and research-to-policy translation in food and nutrition sciences.
             <br /><br />
-            <span className="text-red-600 font-medium">This groundbreaking conference represents a pivotal moment in advancing food science and nutrition research, bringing together the brightest minds to tackle the most pressing challenges facing our global food systems today.</span>
+            <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-red-700 tracking-wide leading-relaxed">This groundbreaking conference represents a pivotal moment in advancing food science and nutrition research, bringing together the brightest minds to tackle the most pressing challenges facing our global food systems today.</span>
             <br /><br />
-            In celebration of <span className="font-semibold text-fuchsia-700">World Food Day 2025</span>, themed <i>"Hand in Hand for Better Foods and a Better Future,"</i> this conference echoes the global call to action by bringing together scientists, policymakers, health professionals, and industry experts to collaborate for a healthier, food-secure world.
+            <span className="text-lg md:text-xl lg:text-2xl">
+              In celebration of <span className="font-semibold text-fuchsia-700">World Food Day 2025</span>, themed <i>"Hand in Hand for Better Foods and a Better Future,"</i> this conference echoes the global call to action by bringing together scientists, policymakers, health professionals, and industry experts to collaborate for a healthier, food-secure world.
+            </span>
           </motion.p>
 
           {/* Compact Countdown Timer */}
@@ -240,7 +242,7 @@ export default function Hero() {
                         <Link to="/registration">
               <Button
                 asChild
-                className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-gradient-to-r from-yellow-400 via-yellow-500 to-purple-500 px-8 py-4 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:shadow-yellow-400/30 hover:scale-102 border-0"
+                className="group relative w-full sm:w-auto overflow-hidden rounded-full bg-yellow-500 px-8 py-4 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:shadow-yellow-400/30 hover:scale-102 border-0"
               >
                 <motion.a
                   whileHover={{ scale: 1.02 }}
