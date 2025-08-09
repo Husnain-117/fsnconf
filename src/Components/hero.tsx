@@ -154,18 +154,17 @@ export default function Hero() {
           </motion.div>
 
           {/* Subtitle - made smaller and more compact */}
-          <motion.p
-            variants={itemVariants}
-            className="mb-6 text-lg md:text-xl lg:text-2xl font-medium text-[#233047]/90 leading-relaxed max-w-4xl"
-          >
-            Join us at <b>FSNC 2025</b>, where global and local experts unite to address key issues in food science, nutrition, and public health. Hosted by <span className="font-semibold text-yellow-500"><b>COMSATS University Islamabad (Sahiwal Campus)</b></span>, in collaboration with the <span className="font-semibold">Higher Education Commission (HEC)</span> and <span className="font-semibold">Pakistan Society of Food Scientists and Technologists (PSFST)</span>, the conference aims to foster innovation, interdisciplinary collaboration, and research-to-policy translation in food and nutrition sciences.
-            <br /><br />
-            <span className="text-2xl md:text-3xl lg:text-4xl font-bold text-red-700 tracking-wide leading-relaxed">This groundbreaking conference represents a pivotal moment in advancing food science and nutrition research, bringing together the brightest minds to tackle the most pressing challenges facing our global food systems today.</span>
-            <br /><br />
-            <span className="text-lg md:text-xl lg:text-2xl">
+          <motion.div variants={itemVariants} className="space-y-6 max-w-4xl">
+            <p className="text-lg md:text-xl lg:text-2xl font-medium text-[#233047]/90 leading-relaxed">
+              Join us at <b>FSNC 2025</b>, where global and local experts unite to address key issues in food science, nutrition, and public health. Hosted by <span className="font-semibold text-yellow-500">COMSATS University Islamabad (Sahiwal Campus)</span>, in collaboration with the <span className="font-semibold">Higher Education Commission (HEC)</span> and <span className="font-semibold">Pakistan Society of Food Scientists and Technologists (PSFST)</span>, the conference aims to foster innovation, interdisciplinary collaboration, and research-to-policy translation in food and nutrition sciences.
+            </p>
+            <p className="text-lg md:text-xl lg:text-2xl font-medium text-[#233047]/90 leading-relaxed">
+              This groundbreaking conference represents a pivotal moment in advancing food science and nutrition research, bringing together the brightest minds to tackle the most pressing challenges facing our global food systems today.
+            </p>
+            <p className="text-lg md:text-xl lg:text-2xl font-medium text-[#233047]/90 leading-relaxed">
               In celebration of <span className="font-semibold text-fuchsia-700">World Food Day 2025</span>, themed <i>"Hand in Hand for Better Foods and a Better Future,"</i> this conference echoes the global call to action by bringing together scientists, policymakers, health professionals, and industry experts to collaborate for a healthier, food-secure world.
-            </span>
-          </motion.p>
+            </p>
+          </motion.div>
 
           {/* Compact Countdown Timer */}
           <motion.div variants={itemVariants} className="relative mb-6">
@@ -303,7 +302,7 @@ export default function Hero() {
               ) : (
                 <span className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
-                  Brusher Download PDF
+                  Brochure Download PDF
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                 </span>
               )}
