@@ -99,9 +99,9 @@ export const Sponsors: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           {/* Header */}
           <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-black text-slate-800 mb-4">
+            <h2 className="text-4xl md:text-5xl text-yellow-500 font-blackmb-4">
               Sponsorship{" "}
-              <span className="text-yellow-600">
+              <span className="text-yellow-500">
                 Opportunities
               </span>
             </h2>
