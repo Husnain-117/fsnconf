@@ -8,7 +8,7 @@ import { Button } from "@/Components/ui/button"
 
 import { Sheet, SheetTrigger, SheetContent } from "@/Components/ui/sheet"
 import { Input } from "@/Components/ui/input"
-import {   ChevronDown, Search } from "lucide-react"
+import {   ChevronDown, Search, Megaphone } from "lucide-react"
 
 import logo from "../assets/Logo.png"
 
@@ -98,6 +98,14 @@ const Header: React.FC = () => {
   /* ---------------------------------------------------------------------- */
   /*                                SPRING ANI                                */
   /* ---------------------------------------------------------------------- */
+  // Headlines for the news ticker (can be replaced with dynamic data later)
+  const headlines: string[] = [
+    "Early-bird registration closes on August 30 — save your seat now!",
+    "Keynote announced: Dr. Ayesha Khan on Future of Food Nutrition",
+    "Workshops added: Nutrigenomics, Sustainable Food Systems, and more",
+    "Call for Papers deadline extended to September 10",
+    "Sponsors spotlight: Thanks to our platinum partners for the support",
+  ]
   const logoSpring = useSpring({
     from: { opacity: 0, transform: "translateY(-20px)" },
     to: { opacity: 1, transform: "translateY(0px)" },
@@ -122,6 +130,15 @@ const Header: React.FC = () => {
   /* ---------------------------------------------------------------------- */
   return (
     <>
+      {/* Local styles for smooth marquee/ticker animation */}
+      <style>
+        {`
+          @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+        `}
+      </style>
       <animated.header
         style={headerSpring}
         className="fixed top-0 left-0 right-0 z-50 shadow-2xl transition-all duration-300 bg-[#6e58a5]"
@@ -326,10 +343,34 @@ const Header: React.FC = () => {
             </Sheet>
           </div>
         </div>
+        {/* News Ticker ------------------------------------------------------------ */}
+        <div className="relative border-t border-white/10 bg-gradient-to-r from-indigo-600/80 via-purple-600/80 to-fuchsia-600/80 backdrop-blur-md">
+          <div className="container mx-auto flex items-center gap-3 px-6 py-2 overflow-hidden">
+            <span className="flex items-center gap-2 text-[10px] sm:text-xs font-semibold uppercase tracking-wider text-white/90 bg-white/10 px-3 py-1 rounded-full">
+              <Megaphone className="h-3.5 w-3.5" /> Latest
+            </span>
+            <div className="relative flex-1 overflow-hidden">
+              <div
+                className="whitespace-nowrap will-change-transform"
+                style={{
+                  display: 'inline-block',
+                  animation: 'ticker 35s linear infinite',
+                }}
+              >
+                {[...headlines, ...headlines].map((h, idx) => (
+                  <span key={`hl-${idx}`} className="mx-6 inline-flex items-center text-xs sm:text-sm text-white/95">
+                    {h}
+                    <span className="mx-6 h-1 w-1 rounded-full bg-white/50 inline-block align-middle" />
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
       </animated.header>
 
       {/* Spacer to offset fixed header */}
-      <div className="h-20" />
+      <div className="h-28" />
     </>
   )
 }
