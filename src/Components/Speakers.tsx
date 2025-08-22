@@ -6,6 +6,80 @@ import { User, X, Linkedin, Twitter, Globe } from 'lucide-react';
 import Header from "./header";
 import Footer from "./Footer";
 
+// Local fallback speakers; used when API/store has no data
+const HARDCODED_SPEAKERS: Speaker[] = [
+  {
+    _id: "local-1",
+    name: "Prof. Dr. Sanaullah Iqbal",
+    title: "Chairman",
+    company: "Department of Food Science and Human Nutrition, University of Veterinary and Animal Sciences (UVAS), Lahore",
+    image: "",
+    bio: "Prof. Dr. Sanaullah Iqbal is a tenured professor and chairman at UVAS, Lahore with extensive academic, research, and administrative experience in food science and nutrition.",
+    expertise: ["Food Science", "Nutrition", "Food Safety", "Public Health"],
+    social: { website: "https://www.uvas.edu.pk/" },
+    featured: false,
+    talkTitle: "Front-of-Pack Labelling (FOPL) as a Public Health Priority for Pakistan: Bridging the Gap Between Nutrition Literacy and Non-Communicable Disease Prevention",
+    talkDescription: "An overview of FOPL, its relevance for Pakistan, and strategies to improve nutrition literacy and reduce NCDs.",
+    type: "session",
+  },
+  {
+    _id: "local-2",
+    name: "Dr. Jane Doe",
+    title: "Associate Professor",
+    company: "Institute of Food and Nutrition Sciences",
+    image: "",
+    bio: "Researcher focusing on functional foods and community nutrition programs.",
+    expertise: ["Functional Foods", "Community Nutrition"],
+    social: {},
+    featured: true,
+    talkTitle: "Innovations in Functional Foods for Metabolic Health",
+    talkDescription: "Translating lab discoveries into public health impact via functional foods.",
+    type: "keynote",
+  },
+  {
+    _id: "local-3",
+    name: "Mr. John Smith",
+    title: "Industry Expert",
+    company: "FoodTech Labs",
+    image: "",
+    bio: "Advisor on food safety systems and quality assurance.",
+    expertise: ["Food Safety", "Quality Assurance"],
+    social: {},
+    featured: false,
+    talkTitle: "Digital QA Systems for Safer Supply Chains",
+    talkDescription: "Modernizing QA with traceability and digital tooling.",
+    type: "invited",
+  },
+  {
+    _id: "local-4",
+    name: "Prof. Dr. Umar Farooq",
+    title: "Dean",
+    company: "Faculty of Food and Home Sciences, MNS University of Agriculture, Multan, Pakistan",
+    image: "",
+    bio: "Focuses on food product development, value addition, and processing technologies with broad academic leadership.",
+    expertise: ["Food Science", "Product Development", "Processing"],
+    social: {},
+    featured: false,
+    talkTitle: "Management of Hypomagnesemia in Patients Through Pumpkin Seeds",
+    talkDescription: "Exploring nutritional interventions using pumpkin seeds.",
+    type: "session",
+  },
+  {
+    _id: "local-5",
+    name: "Dr. Muhammad Farhan Jahangir Chughtai",
+    title: "Chairman",
+    company: "Khwaja Fareed University of Engineering and Information Technology (KFUEIT), Rahim Yar Khan, Pakistan",
+    image: "",
+    bio: "Dr. Muhammad Farhan Jahangir Chughtai is an accomplished academic and administrator with expertise in Food Science, Nutrition, and Halal Food Management. He serves as Additional Director and Assistant Professor at KFUEIT, Rahim Yar Khan. Purdue University (USA), he has led numerous accredited programs, supervised MS/PhD research, and published extensively. His leadership in academia, research, industry collaboration, and curriculum development reflects a strong commitment to innovation and public health impact through sustainable food.",
+    expertise: ["Food Science", "Nutrition", "Halal Food Management", "Packaging"],
+    social: {},
+    featured: false,
+    talkTitle: "Sustainable Edible Packaging: Advances in Materials, Manufacturing, and Applications",
+    talkDescription: "Recent advances and real-world applications of edible packaging for sustainability.",
+    type: "session",
+  },
+];
+
 
 const BASE_API_URL =
   typeof window !== 'undefined' && window.location.hostname === 'localhost'
@@ -139,7 +213,9 @@ const Speakers: React.FC = () => {
     }
   }, [speakers.length, fetchSpeakers]);
 
-  const visibleSpeakers = expanded ? speakers : speakers.slice(0, 3);
+  // Use API/store speakers when available, otherwise local fallback
+  const allSpeakers = speakers.length > 0 ? speakers : HARDCODED_SPEAKERS;
+  const visibleSpeakers = expanded ? allSpeakers : allSpeakers.slice(0, 3);
 
 
   return (
@@ -234,7 +310,7 @@ const Speakers: React.FC = () => {
         )}
 
         {/* Toggle Button */}
-        {!isLoading && speakers.length > 3 && (
+        {!isLoading && allSpeakers.length > 3 && (
           <div className="text-center mt-12">
             <Button
               onClick={() => setExpanded((prev) => !prev)}
