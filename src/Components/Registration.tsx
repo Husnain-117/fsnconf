@@ -5,7 +5,7 @@ import Header from "./header";
 import Footer from "./Footer";
 import { useState, useCallback, useEffect } from "react"
 import { useDropzone } from "react-dropzone"
-import { CheckCircle, UserPlus, ArrowRight, Users, Award, X, Upload, Building, User, DollarSign, FileText, Trash2 } from "lucide-react"
+import { CheckCircle, UserPlus, ArrowRight, Users, Award, X, Upload, Building, User, DollarSign, FileText, Trash2, Banknote, Copy } from "lucide-react"
 import { Button } from "@/Components/ui/button"
 import { Input } from "@/Components/ui/input"
 import { Label } from "@/Components/ui/label"
@@ -388,6 +388,67 @@ export const Registration: React.FC = () => {
                   <h2 className="text-xl font-bold text-slate-800">Payment Information</h2>
                   <p className="text-slate-600">Provide your payment details</p>
                 </div>
+              </div>
+
+              {/* Bank Transfer Details (Official) */}
+              <div className="rounded-2xl border-2 border-yellow-200 bg-yellow-50/60 p-5 shadow-sm">
+                <div className="flex items-start justify-between gap-4 flex-wrap">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2.5 rounded-xl bg-yellow-100">
+                      <Banknote className="h-5 w-5 text-yellow-700" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-800">Bank Transfer Details</h3>
+                      <p className="text-sm text-slate-600">Please transfer your fee to the official conference account and upload the proof below.</p>
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs font-semibold">Official Account</span>
+                </div>
+
+                <div className="mt-4 grid sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <p className="text-xs uppercase tracking-wide text-slate-500">Bank Name</p>
+                    <p className="font-semibold text-slate-800">Habib Bank Limited (HBL)</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs uppercase tracking-wide text-slate-500">Account Title</p>
+                    <p className="font-semibold text-slate-800">CUI SWL COLLECTION</p>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs uppercase tracking-wide text-slate-500">Account Number</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-slate-800">2360-70000011-01</p>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-yellow-200 bg-white/80 px-2.5 py-1 text-xs text-slate-700 hover:bg-yellow-100"
+                        onClick={() => navigator.clipboard.writeText("2360-70000011-01")}
+                        aria-label="Copy account number"
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs uppercase tracking-wide text-slate-500">IBAN</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-slate-800">PK07 HABB 0023 6070 0000 1101</p>
+                      <button
+                        type="button"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-yellow-200 bg-white/80 px-2.5 py-1 text-xs text-slate-700 hover:bg-yellow-100"
+                        onClick={() => navigator.clipboard.writeText("PK07 HABB 0023 6070 0000 1101")}
+                        aria-label="Copy IBAN"
+                      >
+                        <Copy className="h-3.5 w-3.5" />
+                        Copy
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="mt-3 text-xs text-slate-600">
+                  Note: Keep your transaction reference/ID safe and upload a clear snapshot or PDF as payment proof.
+                </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-6">
