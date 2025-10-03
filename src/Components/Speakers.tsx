@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useSpeakerStore, type Speaker } from "@/store/speakerStore"; // Update the path as needed
-import { Button } from "@/Components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, X, Linkedin, Twitter, Globe } from 'lucide-react';
 import Header from "./header";
@@ -203,7 +202,6 @@ const Speakers: React.FC = () => {
   const isLoading = useSpeakerStore(state => state.isLoading);
   const fetchSpeakers = useSpeakerStore(state => state.fetchSpeakers);
   
-  const [expanded, setExpanded] = useState(false);
   const [selectedSpeaker, setSelectedSpeaker] = useState<Speaker | null>(null);
 
   useEffect(() => {
@@ -215,7 +213,124 @@ const Speakers: React.FC = () => {
 
   // Use API/store speakers when available, otherwise local fallback
   const allSpeakers = speakers.length > 0 ? speakers : HARDCODED_SPEAKERS;
-  const visibleSpeakers = expanded ? allSpeakers : allSpeakers.slice(0, 3);
+
+  // Normalize type to lowercase string safely
+  const getType = (sp: Speaker) => (sp.type ? String(sp.type).toLowerCase() : "");
+
+  // Grouped categories
+  const keynoteSpeakers = allSpeakers.filter(
+    (sp) => sp.featured === true || getType(sp) === "keynote"
+  );
+  const invitedSpeakers = allSpeakers.filter((sp) => getType(sp) === "invited");
+  const internationalSpeakers = allSpeakers.filter(
+    (sp) => getType(sp) === "international"
+  );
+  const otherSpeakers = allSpeakers.filter(
+    (sp) =>
+      !(
+        sp.featured === true ||
+        getType(sp) === "keynote" ||
+        getType(sp) === "invited" ||
+        getType(sp) === "international"
+      )
+  );
+
+  const Section: React.FC<{ title: string; items: Speaker[]; highlight?: boolean }> = ({
+    title,
+    items,
+    highlight,
+  }) => {
+    if (!items || items.length === 0) return null;
+    return (
+      <div className="mb-14">
+        <div className="flex items-end justify-between mb-6">
+          <h3
+            className={`text-2xl md:text-3xl font-extrabold ${
+              highlight ? "text-yellow-600" : "text-slate-800"
+            }`}
+          >
+            {title}
+          </h3>
+          <div className="h-1 flex-1 ml-4 bg-gradient-to-r from-slate-200 to-transparent rounded" />
+        </div>
+        <AnimatePresence>
+          <motion.div layout className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
+            {items.map((sp, idx) => (
+              <motion.div
+                key={sp._id}
+                layout
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, delay: idx * 0.05 }}
+                className="bg-white border rounded-2xl shadow hover:shadow-xl transition-all cursor-pointer group"
+                onClick={() => setSelectedSpeaker(sp)}
+              >
+                <div className="relative">
+                  <SpeakerImage
+                    src={sp.image}
+                    alt={sp.name}
+                    className="w-full h-40 object-cover rounded-t-2xl"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-t-2xl" />
+                </div>
+                <div className="p-5 space-y-3">
+                  <div className="space-y-1">
+                    <h4
+                      className="font-bold text-slate-800 text-lg group-hover:text-yellow-600 transition-colors line-clamp-1"
+                      title={sp.name}
+                    >
+                      {sp.name}
+                    </h4>
+                    <p className="text-sm text-slate-600 font-medium">
+                      {sp.company || sp.title}
+                    </p>
+                  </div>
+
+                  {sp.expertise && sp.expertise.length > 0 && (
+                    <div className="mt-2">
+                      <div className="text-xs text-slate-500 font-medium mb-1">
+                        Expertise:
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {sp.expertise.slice(0, 3).map((exp, iidx) => (
+                          <span
+                            key={iidx}
+                            className="inline-block px-2.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 rounded-full"
+                          >
+                            {exp}
+                          </span>
+                        ))}
+                        {sp.expertise.length > 3 && (
+                          <span className="inline-block px-2 py-0.5 text-xs font-medium text-slate-400">
+                            +{sp.expertise.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-2">
+                    <span
+                      className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
+                        sp.featured || getType(sp) === "keynote"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : getType(sp) === "session chair"
+                          ? "bg-purple-100 text-purple-800"
+                          : "bg-slate-100 text-slate-800"
+                      }`}
+                    >
+                      {sp.featured || getType(sp) === "keynote" ? "Keynote" : sp.type}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    );
+  };
 
 
   return (
@@ -233,93 +348,19 @@ const Speakers: React.FC = () => {
           </p>
         </div>
 
-        {/* Speaker Grid */}
+        {/* Speaker Sections */}
         {isLoading ? (
           <p className="text-center text-gray-500">Loading speakers...</p>
         ) : (
-          <AnimatePresence>
-            <motion.div
-              layout
-              className="grid sm:grid-cols-2 md:grid-cols-3 gap-8"
-            >
-              {visibleSpeakers.map((sp, idx) => (
-                <motion.div
-                  key={sp._id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  className="bg-white border rounded-2xl shadow hover:shadow-xl transition-all cursor-pointer group" onClick={() => setSelectedSpeaker(sp)}
-                >
-                  <div className="relative">
-                  <SpeakerImage
-                    src={sp.image}
-                    alt={sp.name}
-                    className="w-full h-40 object-cover rounded-t-2xl"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent rounded-t-2xl" />
-                </div>
-                  <div className="p-5 space-y-3">
-                    <div className="space-y-1">
-                      <h4 className="font-bold text-slate-800 text-lg group-hover:text-yellow-600 transition-colors line-clamp-1" title={sp.name}>
-                        {sp.name}
-                      </h4>
-                      <p className="text-sm text-slate-600 font-medium">{sp.company || sp.title}</p>
-                    </div>
-                    
-                    {sp.expertise && sp.expertise.length > 0 && (
-                      <div className="mt-2">
-                        <div className="text-xs text-slate-500 font-medium mb-1">Expertise:</div>
-                        <div className="flex flex-wrap gap-1.5">
-                          {sp.expertise.slice(0, 3).map((exp, idx) => (
-                            <span 
-                              key={idx} 
-                              className="inline-block px-2.5 py-0.5 text-xs font-medium bg-slate-100 text-slate-700 rounded-full"
-                            >
-                              {exp}
-                            </span>
-                          ))}
-                          {sp.expertise.length > 3 && (
-                            <span className="inline-block px-2 py-0.5 text-xs font-medium text-slate-400">
-                              +{sp.expertise.length - 3} more
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    )}
-                    
-                    <div className="pt-2">
-                      <span
-                        className={`inline-block px-3 py-1 text-xs font-semibold rounded-full ${
-                          sp.featured
-                            ? "bg-yellow-100 text-yellow-800"
-                            : sp.type === "Session Chair"
-                            ? "bg-purple-100 text-purple-800"
-                            : "bg-slate-100 text-slate-800"
-                        }`}
-                      >
-                        {sp.featured ? "Keynote" : sp.type}
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          </AnimatePresence>
+          <>
+            <Section title="Keynote Speakers" items={keynoteSpeakers} highlight />
+            <Section title="Invited Speakers" items={invitedSpeakers} highlight />
+            <Section title="International Speakers" items={internationalSpeakers} />
+            <Section title="Other Speakers" items={otherSpeakers} />
+          </>
         )}
 
-        {/* Toggle Button */}
-        {!isLoading && allSpeakers.length > 3 && (
-          <div className="text-center mt-12">
-            <Button
-              onClick={() => setExpanded((prev) => !prev)}
-              className="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white font-bold px-8 py-4 rounded-full transition-all duration-300 hover:scale-105"
-            >
-              {expanded ? "Show Less" : "View More"}
-            </Button>
-          </div>
-        )}
+        {/* Removed View More toggle to keep layout simple */}
 
        
       </div>
